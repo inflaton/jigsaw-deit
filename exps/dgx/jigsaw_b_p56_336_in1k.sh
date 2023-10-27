@@ -14,7 +14,6 @@ python -m torch.distributed.launch \
     --sched cosine \
     --unscale_lr \
     --lr 1e-3 \
-    --unscale_lr \
     --min-lr 1e-6 \
     --warmup-epochs 1 \
     --mask-ratio 0.0 \
