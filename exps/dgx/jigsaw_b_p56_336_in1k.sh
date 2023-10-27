@@ -12,8 +12,8 @@ python -m torch.distributed.launch \
     --batch-size 512 \
     --epochs 300 \
     --sched cosine \
+    --unscale_lr \
     --lr 1e-3 \
-    --warmup-lr 1e-3 \
     --min-lr 1e-6 \
     --warmup-epochs 1 \
     --mask-ratio 0.0 \

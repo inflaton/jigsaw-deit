@@ -18,12 +18,12 @@ from timm.optim import create_optimizer
 from timm.utils import NativeScaler, get_state_dict, ModelEma
 
 from datasets import build_dataset
-from engine import train_one_epoch, evaluate
+from engine_jigsaw import train_one_epoch, evaluate
 from losses import DistillationLoss
 from samplers import RASampler
 from augment import new_data_aug_generator
 
-import models
+import models_jigsaw
 
 import utils
 
@@ -40,7 +40,7 @@ def get_args_parser():
     # Model parameters
     parser.add_argument(
         "--model",
-        default="deit_base_patch16_224",
+        default="jigsaw_base_patch16_224",
         type=str,
         metavar="MODEL",
         help="Name of model to train",
@@ -333,7 +333,6 @@ def get_args_parser():
     parser.add_argument(
         "--data-set",
         default="IMNET",
-        choices=["CIFAR", "IMNET", "INAT", "INAT19"],
         type=str,
         help="Image Net dataset path",
     )
@@ -391,6 +390,16 @@ def get_args_parser():
     parser.add_argument(
         "--dist_url", default="env://", help="url used to set up distributed training"
     )
+    parser.add_argument(
+        "--local_rank", default=0, help="url used to set up distributed training"
+    )
+
+    # jigsaw
+    parser.add_argument("--use-jigsaw", action="store_true")
+    parser.set_defaults(use_jigsaw=True)
+    parser.add_argument("--lambda-jigsaw", type=float, default=0.1)
+    parser.add_argument("--mask-ratio", type=float, default=0.5)
+
     return parser
 
 
@@ -477,15 +486,53 @@ def main(args):
         )
 
     print(f"Creating model: {args.model}")
-    model = create_model(
-        args.model,
-        pretrained=False,
-        num_classes=args.nb_classes,
-        drop_rate=args.drop,
-        drop_path_rate=args.drop_path,
-        drop_block_rate=None,
-        img_size=args.input_size,
-    )
+    if args.model == "jigsaw_base_patch16_224":
+        model = models_jigsaw.jigsaw_base_patch16_224(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_small_patch16_224":
+        model = models_jigsaw.jigsaw_small_patch16_224(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_tiny_patch16_224":
+        model = models_jigsaw.jigsaw_tiny_patch16_224(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_base_patch16_384":
+        model = models_jigsaw.jigsaw_base_patch16_384(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_base_p56_336":
+        model = models_jigsaw.jigsaw_base_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    else:
+        NotImplementedError("model not implemented")
 
     if args.finetune:
         if args.finetune.startswith("https"):
@@ -566,7 +613,9 @@ def main(args):
 
     model_without_ddp = model
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+        model = torch.nn.parallel.DistributedDataParallel(
+            model, device_ids=[args.gpu], find_unused_parameters=True
+        )
         model_without_ddp = model.module
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("number of params:", n_parameters)
@@ -613,13 +662,13 @@ def main(args):
 
     # wrap the criterion in our custom DistillationLoss, which
     # just dispatches to the original criterion if args.distillation_type is 'none'
-    criterion = DistillationLoss(
-        criterion,
-        teacher_model,
-        args.distillation_type,
-        args.distillation_alpha,
-        args.distillation_tau,
-    )
+    # criterion = DistillationLoss(
+    #     criterion,
+    #     teacher_model,
+    #     args.distillation_type,
+    #     args.distillation_alpha,
+    #     args.distillation_tau,
+    # )
 
     output_dir = Path(args.output_dir)
     if args.resume:
@@ -653,7 +702,7 @@ def main(args):
 
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
-    max_accuracy = 0.0
+    # max_accuracy = 0.0
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
@@ -675,6 +724,7 @@ def main(args):
 
         lr_scheduler.step(epoch)
         if args.output_dir:
+            # current_loss = train_stats["loss_total"]
             checkpoint_paths = [output_dir / "checkpoint.pth"]
             for checkpoint_path in checkpoint_paths:
                 utils.save_on_master(
@@ -690,34 +740,34 @@ def main(args):
                     checkpoint_path,
                 )
 
-        test_stats = evaluate(data_loader_val, model, device)
-        print(
-            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
-        )
+        # test_stats = evaluate(data_loader_val, model, device)
+        # print(
+        #     f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
+        # )
 
-        if max_accuracy < test_stats["acc1"]:
-            max_accuracy = test_stats["acc1"]
-            if args.output_dir:
-                checkpoint_paths = [output_dir / "best_checkpoint.pth"]
-                for checkpoint_path in checkpoint_paths:
-                    utils.save_on_master(
-                        {
-                            "model": model_without_ddp.state_dict(),
-                            "optimizer": optimizer.state_dict(),
-                            "lr_scheduler": lr_scheduler.state_dict(),
-                            "epoch": epoch,
-                            "model_ema": get_state_dict(model_ema),
-                            "scaler": loss_scaler.state_dict(),
-                            "args": args,
-                        },
-                        checkpoint_path,
-                    )
+        # if max_accuracy < test_stats["acc1"]:
+        #     max_accuracy = test_stats["acc1"]
+        #     if args.output_dir:
+        #         checkpoint_paths = [output_dir / "best_checkpoint.pth"]
+        #         for checkpoint_path in checkpoint_paths:
+        #             utils.save_on_master(
+        #                 {
+        #                     "model": model_without_ddp.state_dict(),
+        #                     "optimizer": optimizer.state_dict(),
+        #                     "lr_scheduler": lr_scheduler.state_dict(),
+        #                     "epoch": epoch,
+        #                     "model_ema": get_state_dict(model_ema),
+        #                     "scaler": loss_scaler.state_dict(),
+        #                     "args": args,
+        #                 },
+        #                 checkpoint_path,
+        #             )
 
-        print(f"Max accuracy: {max_accuracy:.2f}%")
+        # print(f"Max accuracy: {max_accuracy:.2f}%")
 
         log_stats = {
             **{f"train_{k}": v for k, v in train_stats.items()},
-            **{f"test_{k}": v for k, v in test_stats.items()},
+            # **{f"test_{k}": v for k, v in test_stats.items()},
             "epoch": epoch,
             "n_parameters": n_parameters,
         }
@@ -733,7 +783,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        "DeiT training and evaluation script", parents=[get_args_parser()]
+        "Jigsaw-ViT training and evaluation script", parents=[get_args_parser()]
     )
     args = parser.parse_args()
     if args.output_dir:
