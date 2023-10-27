@@ -10,10 +10,11 @@ python -m torch.distributed.launch \
     --model jigsaw_base_p56_336 \
     --input-size 336 \
     --batch-size 512 \
-    --epochs 300 \
+    --epochs 50 \
     --sched cosine \
     --unscale_lr \
     --lr 1e-3 \
+    --unscale_lr \
     --min-lr 1e-6 \
     --warmup-epochs 1 \
     --mask-ratio 0.0 \
