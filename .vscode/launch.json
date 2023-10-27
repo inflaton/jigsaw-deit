@@ -1,0 +1,60 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "JigDeit: 384b",
+            "type": "python",
+            "module": "torch.distributed.launch",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "args": [
+                "--nproc_per_node",
+                "2",
+                "main_jigsaw.py",
+                "--model",
+                "jigsaw_base_patch16_384",
+                "--input-size",
+                "384",
+                "--batch-size",
+                "56",
+                "--epochs",
+                "300",
+                "--sched",
+                "cosine",
+                "--lr",
+                "1e-3",
+                "--warmup-lr",
+                "1e-6",
+                "--min-lr",
+                "1e-6",
+                "--warmup-epochs",
+                "1",
+                "--mask-ratio",
+                "0.0",
+                "--lambda-jigsaw",
+                "0.1",
+                "--data-path",
+                "/workspace/data/MSCOCO",
+                "--data-set",
+                "COCO",
+                "--output_dir",
+                "./outputs/jigsaw_base_patch16_384",
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "6,7",
+            },
+            "justMyCode": false,
+        },
+    ]
+}
