@@ -172,7 +172,7 @@ def get_args_parser():
     parser.add_argument(
         "--warmup-epochs",
         type=int,
-        default=5,
+        default=0,
         metavar="N",
         help="epochs to warmup LR, if scheduler supports",
     )
@@ -725,7 +725,7 @@ def main(args):
         lr_scheduler.step(epoch)
         if args.output_dir:
             # current_loss = train_stats["loss_total"]
-            checkpoint_paths = [output_dir / "checkpoint.pth"]
+            checkpoint_paths = [output_dir / f"checkpoint_{epoch}.pth"]
             for checkpoint_path in checkpoint_paths:
                 utils.save_on_master(
                     {

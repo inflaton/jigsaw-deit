@@ -9,13 +9,12 @@ python -m torch.distributed.launch \
     main_jigsaw.py \
     --model jigsaw_base_p56_336 \
     --input-size 336 \
-    --batch-size 512 \
+    --batch-size 768 \
     --epochs 50 \
     --sched cosine \
-    --unscale_lr \
+    --unscale-lr \
     --lr 1e-3 \
     --min-lr 1e-6 \
-    --warmup-epochs 1 \
     --mask-ratio 0.0 \
     --data-path /workspace/study/imagenet/ILSVRC/Data/CLS-LOC \
     --data-set IMNET \
