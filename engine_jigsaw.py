@@ -64,9 +64,9 @@ def train_one_epoch(
                     gt_jigsaw, num_classes=pred_jigsaw.size(-1)
                 ).float()
                 pred_jigsaw_softmax = F.softmax(pred_jigsaw, dim=-1)
-                loss_jigsaw = sinkhorn_loss_fn(pred_jigsaw_softmax, gt_jigsaw_one_hot)
-
-                loss = loss_jigsaw.mean()
+                loss_jigsaw = sinkhorn_loss_fn(
+                    pred_jigsaw_softmax, gt_jigsaw_one_hot
+                ).mean()
                 loss = loss_jigsaw + loss_rec
             else:
                 # Convert gt_jigsaw to one-hot encoding and apply Sinkhorn loss
@@ -75,8 +75,10 @@ def train_one_epoch(
                 ).float()
                 pred_jigsaw_softmax = F.softmax(pred_jigsaw, dim=-1)
 
-                loss_jigsaw = sinkhorn_loss_fn(pred_jigsaw_softmax, gt_jigsaw_one_hot)
-                loss = loss_jigsaw.mean()
+                loss_jigsaw = sinkhorn_loss_fn(
+                    pred_jigsaw_softmax, gt_jigsaw_one_hot
+                ).mean()
+                loss = loss_jigsaw
 
         loss_value = loss.item()
         if args.rec is True:
