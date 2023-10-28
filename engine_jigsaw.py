@@ -39,7 +39,7 @@ def train_one_epoch(
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
     header = "Epoch: [{}]".format(epoch)
     print_freq = 10
-    sinkhorn_loss_fn = SamplesLoss("sinkhorn", p=2, blur=0.01)
+    sinkhorn_loss_fn = SamplesLoss(loss="sinkhorn", p=2, blur=0.01)
 
     for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
         samples = samples.to(device, non_blocking=True)
@@ -61,14 +61,11 @@ def train_one_epoch(
                 loss_jigsaw = F.cross_entropy(pred_jigsaw, gt_jigsaw)
                 loss = loss_jigsaw + loss_rec
             else:
-                # Convert gt_jigsaw to one-hot encoding and apply Sinkhorn loss
+                pred_jigsaw_prob = F.softmax(outputs.pred_jigsaw, dim=-1)
                 gt_jigsaw_one_hot = F.one_hot(
-                    gt_jigsaw, num_classes=pred_jigsaw.size(-1)
+                    outputs.gt_jigsaw, num_classes=pred_jigsaw_prob.size(-1)
                 ).float()
-                pred_jigsaw_softmax = F.softmax(pred_jigsaw, dim=-1)
-                loss_jigsaw = sinkhorn_loss_fn(
-                    pred_jigsaw_softmax, gt_jigsaw_one_hot
-                ).mean()
+                loss_jigsaw = sinkhorn_loss_fn(pred_jigsaw_prob, gt_jigsaw_one_hot)
                 loss = loss_jigsaw
 
         loss_value = loss.item()
