@@ -50,13 +50,16 @@ def train_one_epoch(
         with torch.cuda.amp.autocast():
             outputs = model(samples)
             # loss = 0 * criterion(samples, outputs.sup, targets)
-            loss_jigsaw = (
-                F.cross_entropy(outputs.pred_jigsaw, outputs.gt_jigsaw)
-                # * args.lambda_jigsaw
-            )
-            loss = loss_jigsaw
+            if args.rec is not None:
+                loss_rec = outputs.rec_loss * args.lambda_rec
+                loss_jigsaw = F.cross_entropy(outputs.pred_jigsaw, outputs.gt_jigsaw)
+                loss = loss_jigsaw + loss_rec
+            else:
+                loss = F.cross_entropy(outputs.pred_jigsaw, outputs.gt_jigsaw)
 
         loss_value = loss.item()
+        if args.rec is not None:
+            loss_rec_value = loss_rec.item()
         loss_jigsaw_value = loss_jigsaw.item()
 
         if not math.isfinite(loss_value):
@@ -82,6 +85,8 @@ def train_one_epoch(
             model_ema.update(model)
 
         metric_logger.update(loss_total=loss_value)
+        if args.rec is not None:
+            metric_logger.update(loss_rec=loss_rec_value)
         metric_logger.update(loss_jigsaw=loss_jigsaw_value)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
     # gather the stats from all processes
@@ -124,3 +129,41 @@ def evaluate(data_loader, model, device):
     )
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+
+
+@torch.no_grad()
+def infer_perm(data_loader, model, device):
+    metric_logger = utils.MetricLogger(delimiter="  ")
+    header = "Test:"
+
+    # switch to evaluation mode
+    model.eval()
+
+    all_pred_labels = []
+    all_targets = []
+
+    patch_num_per_img = 36
+
+    for images, targets in metric_logger.log_every(data_loader, 10, header):
+        images = images.to(device, non_blocking=True)
+        targets = targets.to(device, non_blocking=True)
+
+        # compute output
+        with torch.cuda.amp.autocast():
+            output = model(images)
+            pred_jigsaw = output.pred_jigsaw
+
+        # convert logits to hard labels
+        pred_labels = torch.argmax(pred_jigsaw, dim=1)
+
+        # reshape and convert to list of lists
+        pred_labels_list = pred_labels.view(-1, patch_num_per_img).tolist()
+        all_pred_labels.extend(pred_labels_list)
+
+        targets_list = targets.tolist()
+        all_targets.extend(targets_list)
+
+    # gather the stats from all processes
+    metric_logger.synchronize_between_processes()
+
+    return all_pred_labels, all_targets

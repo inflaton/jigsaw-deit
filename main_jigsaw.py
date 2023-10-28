@@ -36,6 +36,8 @@ def get_args_parser():
     parser.add_argument("--epochs", default=300, type=int)
     parser.add_argument("--bce-loss", action="store_true")
     parser.add_argument("--unscale-lr", action="store_true")
+    parser.add_argument("--rec", action="store_true")
+    parser.set_defaults(rec=False)
 
     # Model parameters
     parser.add_argument(
@@ -397,7 +399,7 @@ def get_args_parser():
     # jigsaw
     parser.add_argument("--use-jigsaw", action="store_true")
     parser.set_defaults(use_jigsaw=True)
-    parser.add_argument("--lambda-jigsaw", type=float, default=0.1)
+    parser.add_argument("--lambda-rec", type=float, default=0.1)
     parser.add_argument("--mask-ratio", type=float, default=0.5)
 
     return parser
@@ -524,6 +526,15 @@ def main(args):
         )
     elif args.model == "jigsaw_base_p56_336":
         model = models_jigsaw.jigsaw_base_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsar_base_p56_336":
+        model = models_jigsaw.jigsar_base_patch56_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
             pretrained=False,
@@ -708,6 +719,13 @@ def main(args):
             f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
         )
         return
+
+    if output_dir and utils.is_main_process():
+        with (output_dir / "log.txt").open("a") as f:
+            args_dict = vars(args)
+            for key, value in args_dict.items():
+                f.write(f"{key}: {value}\n")
+            f.write("\n")  # Add an extra newline for better separation between entries
 
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()

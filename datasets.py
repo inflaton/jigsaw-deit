@@ -93,6 +93,10 @@ def build_dataset(is_train, args):
         root = os.path.join(args.data_path, "train2014" if is_train else "val2014")
         dataset = datasets.ImageFolder(root, transform=transform)
         nb_classes = 1
+    elif args.data_set == "CSPUZZLE":
+        root = os.path.join(args.data_path, "train" if is_train else "val")
+        dataset = datasets.ImageFolder(root, transform=transform)
+        nb_classes = 50
     else:
         raise NotImplementedError
 
@@ -121,7 +125,7 @@ def build_transform(is_train, args):
 
     t = []
     if resize_im:
-        size = int(args.input_size / args.eval_crop_ratio)
+        size = int(args.input_size)
         t.append(
             transforms.Resize(
                 size, interpolation=3
