@@ -15,6 +15,7 @@ from timm.utils import accuracy, ModelEma
 from losses import DistillationLoss
 import utils
 import torch.nn.functional as F
+from geomloss import SamplesLoss
 import wandb
 import torch.distributed as dist
 
@@ -38,6 +39,7 @@ def train_one_epoch(
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value:.6f}"))
     header = "Epoch: [{}]".format(epoch)
     print_freq = 10
+    sinkhorn_loss_fn = SamplesLoss("sinkhorn", p=2, blur=0.01)
 
     for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
         samples = samples.to(device, non_blocking=True)
@@ -51,16 +53,35 @@ def train_one_epoch(
 
         with torch.cuda.amp.autocast():
             outputs = model(samples)
+            pred_jigsaw = outputs.pred_jigsaw
+            gt_jigsaw = outputs.gt_jigsaw
             # loss = 0 * criterion(samples, outputs.sup, targets)
-            if args.rec is not None:
+            if args.rec is True:
                 loss_rec = outputs.rec_loss * args.lambda_rec
-                loss_jigsaw = F.cross_entropy(outputs.pred_jigsaw, outputs.gt_jigsaw)
+
+                # Convert gt_jigsaw to one-hot encoding and apply Sinkhorn loss
+                gt_jigsaw_one_hot = F.one_hot(
+                    gt_jigsaw, num_classes=pred_jigsaw.size(-1)
+                ).float()
+                pred_jigsaw_softmax = F.softmax(pred_jigsaw, dim=-1)
+                loss_jigsaw = sinkhorn_loss_fn(
+                    pred_jigsaw_softmax, gt_jigsaw_one_hot
+                ).mean()
                 loss = loss_jigsaw + loss_rec
             else:
-                loss = F.cross_entropy(outputs.pred_jigsaw, outputs.gt_jigsaw)
+                # Convert gt_jigsaw to one-hot encoding and apply Sinkhorn loss
+                gt_jigsaw_one_hot = F.one_hot(
+                    gt_jigsaw, num_classes=pred_jigsaw.size(-1)
+                ).float()
+                pred_jigsaw_softmax = F.softmax(pred_jigsaw, dim=-1)
+
+                loss_jigsaw = sinkhorn_loss_fn(
+                    pred_jigsaw_softmax, gt_jigsaw_one_hot
+                ).mean()
+                loss = loss_jigsaw
 
         loss_value = loss.item()
-        if args.rec is not None:
+        if args.rec is True:
             loss_rec_value = loss_rec.item()
         loss_jigsaw_value = loss_jigsaw.item()
 
@@ -87,13 +108,13 @@ def train_one_epoch(
             model_ema.update(model)
 
         metric_logger.update(loss_total=loss_value)
-        if args.rec is not None:
+        if args.rec is True:
             metric_logger.update(loss_rec=loss_rec_value)
         metric_logger.update(loss_jigsaw=loss_jigsaw_value)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         if dist.get_rank() == 0:
             wandb.log({"total_loss": loss_value, "jigsaw_loss": loss_jigsaw_value})
-            if args.rec is not None:
+            if args.rec is True:
                 wandb.log({"rec_loss": loss_rec_value})
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
