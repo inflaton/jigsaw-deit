@@ -152,20 +152,6 @@ def main(args):
         drop_last=False,
     )
 
-    val_img_paths = []
-    for i, (images, labels) in enumerate(data_loader_val):
-        paths = [
-            dataset_val.imgs[j][0]
-            for j in range(
-                i * data_loader_val.batch_size, (i + 1) * data_loader_val.batch_size
-            )
-        ]
-        # Get the paths for the images in this batch
-        print(paths)
-        # val_img_paths.extend(paths)
-        if i > 1:
-            exit()
-
     print(f"Creating model: {args.model}")
     if args.model == "jigsaw_base_patch16_224":
         model = models_jigsaw.jigsaw_base_patch16_224(

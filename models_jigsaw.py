@@ -82,7 +82,7 @@ class JigsawVisionTransformer(VisionTransformer):
         x = self.blocks(x)
         x = self.norm(x)
         x = self.jigsaw(x[:, 1:])
-        return x.reshape(-1, self.num_patches), target.reshape(-1)
+        return x, target
 
     def infer_jigsaw(self, x):
         # append cls token
@@ -425,6 +425,34 @@ def jigsaw_base_patch56_336(
         embed_dim=768,
         depth=12,
         num_heads=12,
+        mlp_ratio=4,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    if pretrained:
+        checkpoint = torch.hub.load_state_dict_from_url(
+            url="https://dl.fbaipublicfiles.com/deit/deit_base_patch16_384-8de9b5d1.pth",
+            map_location="cpu",
+            check_hash=True,
+        )
+        model.load_state_dict(checkpoint["model"], strict=False)
+    return model
+
+
+@register_model
+def jigsaw_small_patch56_336(
+    mask_ratio=0.5, use_jigsaw=True, pretrained=False, **kwargs
+):
+    model = JigsawVisionTransformer(
+        mask_ratio=mask_ratio,
+        use_jigsaw=use_jigsaw,
+        img_size=336,
+        patch_size=56,
+        embed_dim=768,
+        depth=12,
+        num_heads=6,
         mlp_ratio=4,
         qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
