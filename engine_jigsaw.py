@@ -114,7 +114,7 @@ def train_one_epoch(
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         if dist.get_rank() == 0:
             wandb.log({"total_loss": loss_value, "jigsaw_loss": loss_jigsaw_value})
-            if args.rec is not None:
+            if args.rec is True:
                 wandb.log({"rec_loss": loss_rec_value})
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
