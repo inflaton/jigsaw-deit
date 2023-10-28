@@ -552,8 +552,17 @@ def main(args):
             drop_rate=args.drop,
             drop_path_rate=args.drop_path,
         )
-    elif args.model == "jigsar_base_p56_336":
-        model = models_jigsaw.jigsar_base_patch56_336(
+    elif args.model == "jigsaw_tiny_p56_336":
+        model = models_jigsaw.jigsaw_tiny_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_r_base_p56_336":
+        model = models_jigsaw.jigsaw_r_base_patch56_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
             pretrained=False,
