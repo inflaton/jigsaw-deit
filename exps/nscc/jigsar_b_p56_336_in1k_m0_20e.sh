@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -q normal
+#PBS -q ai
 #PBS -j oe
 #PBS -l select=1:ngpus=4
 #PBS -l walltime=24:00:00
