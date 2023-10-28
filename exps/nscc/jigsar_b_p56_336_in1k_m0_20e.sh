@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -q normal
 #PBS -j oe
-#PBS -l select=1:ngpus=2
+#PBS -l select=1:ngpus=4
 #PBS -l walltime=24:00:00
 #PBS -P 21026844
 #PBS -N jigsar_20ep
@@ -15,14 +15,14 @@ conda activate study
 cd ./study/puzzle/jigsaw-deit
 
 python -m torch.distributed.launch \
-    --nproc_per_node=2 \
+    --nproc_per_node=4 \
     --use_env \
     --master_port 20000 \
     main_jigsaw.py \
     --rec \
     --model jigsar_base_p56_336 \
     --input-size 336 \
-    --batch-size 1024 \
+    --batch-size 512 \
     --num_workers 32 \
     --epochs 20 \
     --sched cosine \

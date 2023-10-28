@@ -11,15 +11,16 @@ import json
 from pathlib import Path
 
 from timm.data import Mixup
+import wandb
 from timm.models import create_model
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 from timm.scheduler import create_scheduler
 from timm.optim import create_optimizer
 from timm.utils import NativeScaler, get_state_dict, ModelEma
 
+import torch.distributed as dist
 from datasets import build_dataset
 from engine_jigsaw import train_one_epoch, evaluate
-from losses import DistillationLoss
 from samplers import RASampler
 from augment import new_data_aug_generator
 
@@ -407,6 +408,15 @@ def get_args_parser():
 
 def main(args):
     utils.init_distributed_mode(args)
+
+    if dist.get_rank() == 0:
+        run = wandb.init(
+            # Set the project where this run will be logged
+            project="Puzzle",
+            name="args.output_dir",
+            # Track hyperparameters and run metadata
+            config=vars(args),
+        )
 
     print(args)
 
@@ -806,6 +816,8 @@ def main(args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print("Training time {}".format(total_time_str))
+    if dist.get_rank() == 0:
+        run.finish()
 
 
 if __name__ == "__main__":
