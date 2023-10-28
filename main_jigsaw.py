@@ -413,7 +413,7 @@ def main(args):
         run = wandb.init(
             # Set the project where this run will be logged
             project="Puzzle",
-            name="args.output_dir",
+            name=f"{args.output_dir.replace('./outputs/', '')}",
             # Track hyperparameters and run metadata
             config=vars(args),
         )
