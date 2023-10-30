@@ -11,13 +11,14 @@ from timm.models.layers import trunc_normal_
 from utils import get_2d_sincos_pos_embed
 from munch import Munch
 
+import numpy as np
+
 
 class JigsawVisionTransformer(VisionTransformer):
     def __init__(self, mask_ratio, use_jigsaw, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.mask_ratio = mask_ratio
         self.use_jigsaw = use_jigsaw
-
         self.num_patches = self.patch_embed.num_patches
 
         if self.use_jigsaw:
@@ -46,33 +47,25 @@ class JigsawVisionTransformer(VisionTransformer):
         x = self.head(x[:, 0])
         return x
 
-    def random_masking(self, x, mask_ratio=0.0):
+    def random_masking(self, x, target, mask_ratio=0.0):
         """
         Perform per-sample random masking by per-sample shuffling.
         Per-sample shuffling is done by argsort random noise.
         x: [N, L, D], sequence
         """
         N, L, D = x.shape  # batch, length, dim
-        len_keep = int(L * (1 - mask_ratio))
-
-        noise = torch.rand(N, L, device=x.device)  # noise in [0, 1]
-
-        # sort noise for each sample
-        ids_shuffle = torch.argsort(noise, dim=1)
-        # ascend: small is keep, large is remove
-        # target = einops.repeat(self.target, "L -> N L", N=N)
-        # target = target.to(x.device)
 
         # keep the first subset
-        ids_keep = ids_shuffle[:, :len_keep]  # N, len_keep
+        len_keep = int(L * (1 - mask_ratio))
+        ids_keep = target[:, :len_keep]  # N, len_keep
         x_masked = torch.gather(x, dim=1, index=ids_keep.unsqueeze(-1).repeat(1, 1, D))
         target_masked = ids_keep
 
         return x_masked, target_masked
 
-    def forward_jigsaw(self, x):
+    def forward_jigsaw(self, x, target):
         # masking: length -> length * mask_ratio
-        x, target = self.random_masking(x, self.mask_ratio)
+        x, target = self.random_masking(x, target, self.mask_ratio)
 
         # append cls token
         cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
@@ -95,22 +88,23 @@ class JigsawVisionTransformer(VisionTransformer):
         x = self.jigsaw(x[:, 1:])
         return x.reshape(-1, self.num_patches)
 
-    def forward(self, x):
+    def forward(self, x, target):
         x = self.patch_embed(x)
         # pred_cls = self.forward_cls(x)
         if self.use_jigsaw:
             # if train, use forward_jigsaw, otherwise use forwar_cls
-            if self.training:
-                pred_jigsaw, targets_jigsaw = self.forward_jigsaw(x)
-                outs = Munch()
-                # dim: [N * num_patches, num_patches]
-                outs.pred_jigsaw = pred_jigsaw
-                # dim: [N * num_patches]
-                outs.gt_jigsaw = targets_jigsaw
-            else:
-                pred_jigsaw = self.infer_jigsaw(x)
-                outs = Munch()
-                outs.pred_jigsaw = pred_jigsaw
+            # if self.training:
+            pred_jigsaw, targets_jigsaw = self.forward_jigsaw(x, target)
+            outs = Munch()
+            # dim: [N * num_patches, num_patches]
+            outs.pred_jigsaw = pred_jigsaw
+            # dim: [N * num_patches]
+            outs.gt_jigsaw = targets_jigsaw
+            # else:
+            #     pred_jigsaw = self.infer_jigsaw(x)
+            #     outs = Munch()
+            #     outs.pred_jigsaw = pred_jigsaw
+
         else:
             raise NotImplementedError("You must use jigsaw!")
         return outs
@@ -477,8 +471,8 @@ def jigsaw_tiny_patch56_336(
         mask_ratio=mask_ratio,
         use_jigsaw=use_jigsaw,
         img_size=336,
-        patch_size=168,
-        embed_dim=768,
+        patch_size=56,
+        embed_dim=192,
         depth=12,
         num_heads=3,
         mlp_ratio=4,
@@ -510,6 +504,90 @@ def jigsaw_r_base_patch56_336(
         embed_dim=768,
         depth=12,
         num_heads=12,
+        mlp_ratio=4,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    if pretrained:
+        checkpoint = torch.hub.load_state_dict_from_url(
+            url="https://dl.fbaipublicfiles.com/deit/deit_base_patch16_384-8de9b5d1.pth",
+            map_location="cpu",
+            check_hash=True,
+        )
+        model.load_state_dict(checkpoint["model"], strict=False)
+    return model
+
+
+@register_model
+def jigsaw_base_patch112_336(
+    mask_ratio=0.0, use_jigsaw=True, pretrained=False, **kwargs
+):
+    model = JigsawVisionTransformer(
+        mask_ratio=mask_ratio,
+        use_jigsaw=use_jigsaw,
+        img_size=336,
+        patch_size=112,
+        embed_dim=768,
+        depth=12,
+        num_heads=12,
+        mlp_ratio=4,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    if pretrained:
+        checkpoint = torch.hub.load_state_dict_from_url(
+            url="https://dl.fbaipublicfiles.com/deit/deit_base_patch16_384-8de9b5d1.pth",
+            map_location="cpu",
+            check_hash=True,
+        )
+        model.load_state_dict(checkpoint["model"], strict=False)
+    return model
+
+
+@register_model
+def jigsaw_base_patch168_336(
+    mask_ratio=0.0, use_jigsaw=True, pretrained=False, **kwargs
+):
+    model = JigsawVisionTransformer(
+        mask_ratio=mask_ratio,
+        use_jigsaw=use_jigsaw,
+        img_size=336,
+        patch_size=168,
+        embed_dim=768,
+        depth=12,
+        num_heads=12,
+        mlp_ratio=4,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    if pretrained:
+        checkpoint = torch.hub.load_state_dict_from_url(
+            url="https://dl.fbaipublicfiles.com/deit/deit_base_patch16_384-8de9b5d1.pth",
+            map_location="cpu",
+            check_hash=True,
+        )
+        model.load_state_dict(checkpoint["model"], strict=False)
+    return model
+
+
+@register_model
+def jigsaw_tiny_patch168_336(
+    mask_ratio=0.0, use_jigsaw=True, pretrained=False, **kwargs
+):
+    model = JigsawVisionTransformer(
+        mask_ratio=mask_ratio,
+        use_jigsaw=use_jigsaw,
+        img_size=336,
+        patch_size=168,
+        embed_dim=192,
+        depth=12,
+        num_heads=3,
         mlp_ratio=4,
         qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6),

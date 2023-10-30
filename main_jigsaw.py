@@ -11,7 +11,8 @@ import json
 from pathlib import Path
 
 from timm.data import Mixup
-import wandb
+
+# import wandb
 from timm.models import create_model
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 from timm.scheduler import create_scheduler
@@ -49,6 +50,7 @@ def get_args_parser():
         help="Name of model to train",
     )
     parser.add_argument("--input-size", default=224, type=int, help="images input size")
+    parser.add_argument("--permcls", default=50, type=int, help="images input size")
 
     parser.add_argument(
         "--drop",
@@ -219,7 +221,7 @@ def get_args_parser():
                              "(default: rand-m9-mstd0.5-inc1)',
     ),
     parser.add_argument(
-        "--smoothing", type=float, default=0.1, help="Label smoothing (default: 0.1)"
+        "--smoothing", type=float, default=None, help="Label smoothing (default: 0.1)"
     )
     parser.add_argument(
         "--train-interpolation",
@@ -268,13 +270,13 @@ def get_args_parser():
     parser.add_argument(
         "--mixup",
         type=float,
-        default=0.8,
+        default=0.0,
         help="mixup alpha, mixup enabled if > 0. (default: 0.8)",
     )
     parser.add_argument(
         "--cutmix",
         type=float,
-        default=1.0,
+        default=0.0,
         help="cutmix alpha, cutmix enabled if > 0. (default: 1.0)",
     )
     parser.add_argument(
@@ -409,14 +411,14 @@ def get_args_parser():
 def main(args):
     utils.init_distributed_mode(args)
 
-    if dist.get_rank() == 0:
-        run = wandb.init(
-            # Set the project where this run will be logged
-            project="Puzzle",
-            name=f"{args.output_dir.replace('./outputs/', '')}",
-            # Track hyperparameters and run metadata
-            config=vars(args),
-        )
+    # if dist.get_rank() == 0:
+    #     run = wandb.init(
+    #         # Set the project where this run will be logged
+    #         project="Puzzle",
+    #         name=f"{args.output_dir.replace('./outputs/', '')}",
+    #         # Track hyperparameters and run metadata
+    #         config=vars(args),
+    #     )
 
     print(args)
 
@@ -435,6 +437,27 @@ def main(args):
 
     dataset_train, args.nb_classes = build_dataset(is_train=True, args=args)
     dataset_val, _ = build_dataset(is_train=False, args=args)
+
+    class CustomDataset:
+        def __init__(self, dataset, permcls):
+            self.dataset = dataset
+            self.permcls = permcls
+            self.permset = np.load(f"perm6x6x{self.permcls}.npy")
+
+        def __len__(self):
+            return len(self.dataset)
+
+        def __getitem__(self, index):
+            data, _ = self.dataset[index]
+            # Generate a random index for each sample in the batch using NumPy
+            rand_indices = np.random.randint(0, self.permcls)
+            # Use the generated random indices to select rows from self.permset
+            ids_shuffle = self.permset[rand_indices]
+            # ids_shuffle = np.arange(36)
+            return data, ids_shuffle
+
+    dataset_train = CustomDataset(dataset_train, args.permcls)
+    dataset_val = CustomDataset(dataset_val, args.permcls)
 
     if True:  # args.distributed:
         num_tasks = utils.get_world_size()
@@ -486,6 +509,9 @@ def main(args):
     mixup_fn = None
     mixup_active = args.mixup > 0 or args.cutmix > 0.0 or args.cutmix_minmax is not None
     if mixup_active:
+        print(
+            f"Mixup enabled, alpha: {args.mixup}, cutmix: {args.cutmix}, cutmix-minmax: {args.cutmix_minmax}"
+        )
         mixup_fn = Mixup(
             mixup_alpha=args.mixup,
             cutmix_alpha=args.cutmix,
@@ -534,7 +560,7 @@ def main(args):
             drop_rate=args.drop,
             drop_path_rate=args.drop_path,
         )
-    elif args.model == "jigsaw_base_p56_336":
+    elif args.model == "jigsaw_base_patch56_336":
         model = models_jigsaw.jigsaw_base_patch56_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
@@ -543,7 +569,7 @@ def main(args):
             drop_rate=args.drop,
             drop_path_rate=args.drop_path,
         )
-    elif args.model == "jigsaw_small_p56_336":
+    elif args.model == "jigsaw_small_patch56_336":
         model = models_jigsaw.jigsaw_small_patch56_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
@@ -552,7 +578,7 @@ def main(args):
             drop_rate=args.drop,
             drop_path_rate=args.drop_path,
         )
-    elif args.model == "jigsaw_tiny_p56_336":
+    elif args.model == "jigsaw_tiny_patch56_336":
         model = models_jigsaw.jigsaw_tiny_patch56_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
@@ -561,8 +587,35 @@ def main(args):
             drop_rate=args.drop,
             drop_path_rate=args.drop_path,
         )
-    elif args.model == "jigsaw_r_base_p56_336":
+    elif args.model == "jigsaw_r_base_patch56_336":
         model = models_jigsaw.jigsaw_r_base_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_base_patch112_336":
+        model = models_jigsaw.jigsaw_base_patch112_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_base_patch168_336":
+        model = models_jigsaw.jigsaw_base_patch168_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_tiny_patch168_336":
+        model = models_jigsaw.jigsaw_tiny_patch168_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
             pretrained=False,
@@ -582,23 +635,23 @@ def main(args):
             checkpoint = torch.load(args.finetune, map_location="cpu")
 
         checkpoint_model = checkpoint["model"]
-        state_dict = model.state_dict()
-        for k in [
-            "head.weight",
-            "head.bias",
-            "head_dist.weight",
-            "head_dist.bias",
-            "pos_embed",
-            "patch_embed.proj.weight",
-            "jigsaw.4.weight",
-            "jigsaw.4.bias",
-        ]:
-            if (
-                k in checkpoint_model
-                and checkpoint_model[k].shape != state_dict[k].shape
-            ):
-                print(f"Removing key {k} from pretrained checkpoint")
-                del checkpoint_model[k]
+        # state_dict = model.state_dict()
+        # for k in [
+        #     "head.weight",
+        #     "head.bias",
+        #     "head_dist.weight",
+        #     "head_dist.bias",
+        #     "pos_embed",
+        #     "patch_embed.proj.weight",
+        #     "jigsaw.4.weight",
+        #     "jigsaw.4.bias",
+        # ]:
+        #     if (
+        #         k in checkpoint_model
+        #         and checkpoint_model[k].shape != state_dict[k].shape
+        #     ):
+        #         print(f"Removing key {k} from pretrained checkpoint")
+        #         del checkpoint_model[k]
 
         # interpolate position embedding
         # pos_embed_checkpoint = checkpoint_model["pos_embed"]
@@ -668,6 +721,7 @@ def main(args):
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("number of params:", n_parameters)
     if not args.unscale_lr:
+        # for base batchsize 512 (single-card 512)
         linear_scaled_lr = args.lr * args.batch_size * utils.get_world_size() / 512.0
         args.lr = linear_scaled_lr
     optimizer = create_optimizer(args, model_without_ddp)
@@ -677,16 +731,18 @@ def main(args):
 
     criterion = LabelSmoothingCrossEntropy()
 
-    if mixup_active:
-        # smoothing is handled with mixup label transform
+    if args.bce_loss:
+        print("using bce loss")
+        criterion = torch.nn.BCEWithLogitsLoss()
+    elif mixup_active:
+        print("using mixup loss")
         criterion = SoftTargetCrossEntropy()
     elif args.smoothing:
+        print("using label smoothing loss")
         criterion = LabelSmoothingCrossEntropy(smoothing=args.smoothing)
     else:
+        print("using cross entropy loss")
         criterion = torch.nn.CrossEntropyLoss()
-
-    if args.bce_loss:
-        criterion = torch.nn.BCEWithLogitsLoss()
 
     teacher_model = None
     if args.distillation_type != "none":
@@ -757,7 +813,7 @@ def main(args):
 
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
-    # max_accuracy = 0.0
+    max_accuracy = 0.0
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
@@ -780,45 +836,44 @@ def main(args):
         lr_scheduler.step(epoch)
         if args.output_dir:
             # current_loss = train_stats["loss_total"]
-            checkpoint_paths = [output_dir / f"checkpoint_{epoch}.pth"]
-            for checkpoint_path in checkpoint_paths:
-                utils.save_on_master(
-                    {
-                        "model": model_without_ddp.state_dict(),
-                        "optimizer": optimizer.state_dict(),
-                        "lr_scheduler": lr_scheduler.state_dict(),
-                        "epoch": epoch,
-                        "model_ema": get_state_dict(model_ema),
-                        "scaler": loss_scaler.state_dict(),
-                        "args": args,
-                    },
-                    checkpoint_path,
-                )
+            checkpoint_path = output_dir / f"checkpoint_{epoch}.pth"
+            utils.save_on_master(
+                {
+                    "model": model_without_ddp.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "lr_scheduler": lr_scheduler.state_dict(),
+                    "epoch": epoch,
+                    "model_ema": get_state_dict(model_ema),
+                    "scaler": loss_scaler.state_dict(),
+                    "args": args,
+                },
+                checkpoint_path,
+            )
 
-        # test_stats = evaluate(data_loader_val, model, device)
-        # print(
-        #     f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
-        # )
+        test_stats = evaluate(data_loader_val, model, device)
+        print(
+            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc']:.1f}%"
+        )
 
-        # if max_accuracy < test_stats["acc1"]:
-        #     max_accuracy = test_stats["acc1"]
-        #     if args.output_dir:
-        #         checkpoint_paths = [output_dir / "best_checkpoint.pth"]
-        #         for checkpoint_path in checkpoint_paths:
-        #             utils.save_on_master(
-        #                 {
-        #                     "model": model_without_ddp.state_dict(),
-        #                     "optimizer": optimizer.state_dict(),
-        #                     "lr_scheduler": lr_scheduler.state_dict(),
-        #                     "epoch": epoch,
-        #                     "model_ema": get_state_dict(model_ema),
-        #                     "scaler": loss_scaler.state_dict(),
-        #                     "args": args,
-        #                 },
-        #                 checkpoint_path,
-        #             )
+        if max_accuracy < test_stats["acc"]:
+            max_accuracy = test_stats["acc"]
+            if args.output_dir:
+                checkpoint_paths = [output_dir / "best_checkpoint.pth"]
+                for checkpoint_path in checkpoint_paths:
+                    utils.save_on_master(
+                        {
+                            "model": model_without_ddp.state_dict(),
+                            "optimizer": optimizer.state_dict(),
+                            "lr_scheduler": lr_scheduler.state_dict(),
+                            "epoch": epoch,
+                            "model_ema": get_state_dict(model_ema),
+                            "scaler": loss_scaler.state_dict(),
+                            "args": args,
+                        },
+                        checkpoint_path,
+                    )
 
-        # print(f"Max accuracy: {max_accuracy:.2f}%")
+        print(f"Max accuracy: {max_accuracy:.2f}%")
 
         log_stats = {
             **{f"train_{k}": v for k, v in train_stats.items()},
@@ -834,8 +889,8 @@ def main(args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print("Training time {}".format(total_time_str))
-    if dist.get_rank() == 0:
-        run.finish()
+    # if dist.get_rank() == 0:
+    #     run.finish() # wandb
 
 
 if __name__ == "__main__":
