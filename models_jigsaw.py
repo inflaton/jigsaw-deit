@@ -13,6 +13,8 @@ from munch import Munch
 
 import numpy as np
 
+# import pdb
+
 
 class JigsawVisionTransformer(VisionTransformer):
     def __init__(self, mask_ratio, use_jigsaw, *args, **kwargs):
@@ -31,20 +33,25 @@ class JigsawVisionTransformer(VisionTransformer):
                     nn.Linear(self.embed_dim, self.num_patches),
                 ]
             )
+            # Define a new linear layer for 50-class classification
+            self.classifier = nn.Sequential(
+                nn.ReLU(),
+                nn.Dropout(0.1),  # Optional: dropout for regularization
+                nn.Linear(self.num_patches, 50),  # 50 class classifier
+            )
             self.target = torch.arange(self.num_patches)
 
     def forward_cls(self, x):
         # add pos embed w/o cls token
-        x = x + self.pos_embed[:, 1:, :]
-
-        # append cls token
-        cls_token = self.cls_token + self.pos_embed[:, :1, :]
-        cls_tokens = cls_token.expand(x.shape[0], -1, -1)
+        cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
         x = torch.cat((cls_tokens, x), dim=1)
 
+        # apply Transformer blocks
         x = self.blocks(x)
         x = self.norm(x)
-        x = self.head(x[:, 0])
+        x = self.jigsaw(x)
+        x = self.classifier(x[:, 0])
+
         return x
 
     def random_masking(self, x, target, mask_ratio=0.0):
@@ -88,11 +95,9 @@ class JigsawVisionTransformer(VisionTransformer):
         x = self.jigsaw(x[:, 1:])
         return x.reshape(-1, self.num_patches)
 
-    def forward(self, x, target):
+    def _forward(self, x, target):
         x = self.patch_embed(x)
-        # pred_cls = self.forward_cls(x)
         if self.use_jigsaw:
-            # if train, use forward_jigsaw, otherwise use forwar_cls
             # if self.training:
             pred_jigsaw, targets_jigsaw = self.forward_jigsaw(x, target)
             outs = Munch()
@@ -107,6 +112,20 @@ class JigsawVisionTransformer(VisionTransformer):
 
         else:
             raise NotImplementedError("You must use jigsaw!")
+        return outs
+
+    def forward(self, x, target, my_im):
+        outs = Munch()
+        x = self.patch_embed(x)
+        my_im = self.patch_embed(my_im)
+        pred_jigsaw, targets_jigsaw = self.forward_jigsaw(x, target)
+
+        pred_cls = self.forward_cls(my_im)
+        outs.sup = pred_cls
+        # dim: [N * num_patches, num_patches]
+        outs.pred_jigsaw = pred_jigsaw
+        # dim: [N * num_patches]
+        outs.gt_jigsaw = targets_jigsaw
         return outs
 
 

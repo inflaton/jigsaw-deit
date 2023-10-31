@@ -12,7 +12,7 @@ from pathlib import Path
 
 from timm.data import Mixup
 
-# import wandb
+import wandb
 from timm.models import create_model
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 from timm.scheduler import create_scheduler
@@ -21,7 +21,8 @@ from timm.utils import NativeScaler, get_state_dict, ModelEma
 
 import torch.distributed as dist
 from datasets import build_dataset
-from engine_jigsaw import train_one_epoch, evaluate
+from torch.utils.data import Dataset
+from engine_jigsaw import train_one_epoch, evaluate, train_one_epoch_cls, evaluate_cls
 from samplers import RASampler
 from augment import new_data_aug_generator
 
@@ -342,6 +343,12 @@ def get_args_parser():
         help="Image Net dataset path",
     )
     parser.add_argument(
+        "--nb-classes",
+        default=1000,
+        type=int,
+        help="number of classes",
+    )
+    parser.add_argument(
         "--inat-category",
         default="name",
         choices=[
@@ -402,6 +409,8 @@ def get_args_parser():
     # jigsaw
     parser.add_argument("--use-jigsaw", action="store_true")
     parser.set_defaults(use_jigsaw=True)
+    parser.add_argument("--use-cls", action="store_true")
+    parser.set_defaults(use_cls=False)
     parser.add_argument("--lambda-rec", type=float, default=0.1)
     parser.add_argument("--mask-ratio", type=float, default=0.5)
 
@@ -435,29 +444,56 @@ def main(args):
 
     cudnn.benchmark = True
 
-    dataset_train, args.nb_classes = build_dataset(is_train=True, args=args)
-    dataset_val, _ = build_dataset(is_train=False, args=args)
-
-    class CustomDataset:
-        def __init__(self, dataset, permcls):
+    class CustomDataset(Dataset):
+        def __init__(self, dataset, my_dataset, permcls, use_cls=False):
             self.dataset = dataset
             self.permcls = permcls
             self.permset = np.load(f"perm6x6x{self.permcls}.npy")
+            self.my_dataset = my_dataset
+            self.use_cls = use_cls
+            print(f"Loading classification branch: {self.use_cls}")
 
         def __len__(self):
-            return len(self.dataset)
+            if self.use_cls:
+                return min(len(self.dataset), len(self.my_dataset))
+            else:
+                return len(self.dataset)
 
         def __getitem__(self, index):
-            data, _ = self.dataset[index]
-            # Generate a random index for each sample in the batch using NumPy
-            rand_indices = np.random.randint(0, self.permcls)
-            # Use the generated random indices to select rows from self.permset
-            ids_shuffle = self.permset[rand_indices]
-            # ids_shuffle = np.arange(36)
-            return data, ids_shuffle
+            if self.use_cls:
+                # imagenet data
+                dataset_index = np.random.randint(len(self.dataset))
+                data, _ = self.dataset[dataset_index]
+                rand_indices = np.random.randint(0, self.permcls)
+                ids_shuffle = self.permset[rand_indices]
 
-    dataset_train = CustomDataset(dataset_train, args.permcls)
-    dataset_val = CustomDataset(dataset_val, args.permcls)
+                # csdata
+                my_image, my_label = self.my_dataset[index]
+                return {
+                    "image": data,
+                    "ids_shuffle": ids_shuffle,
+                    "my_image": my_image,
+                    "my_label": my_label,
+                }
+            else:
+                data, _ = self.dataset[index]
+                rand_indices = np.random.randint(0, self.permcls)
+                ids_shuffle = self.permset[rand_indices]
+                return {"image": data, "ids_shuffle": ids_shuffle}
+
+    dataset_train, _ = build_dataset(is_train=True, data_set=args.data_set, args=args)
+    dataset_val, _ = build_dataset(is_train=False, data_set=args.data_set, args=args)
+    csdataset_train, args.nb_classes = build_dataset(
+        is_train=True,
+        data_set="CS",
+        args=args,
+    )
+    csdataset_val, _ = build_dataset(is_train=False, data_set="CS", args=args)
+
+    dataset_train = CustomDataset(
+        dataset_train, csdataset_train, args.permcls, args.use_cls
+    )
+    dataset_val = CustomDataset(dataset_val, csdataset_val, args.permcls, args.use_cls)
 
     if True:  # args.distributed:
         num_tasks = utils.get_world_size()
@@ -500,7 +536,7 @@ def main(args):
     data_loader_val = torch.utils.data.DataLoader(
         dataset_val,
         sampler=sampler_val,
-        batch_size=int(1.5 * args.batch_size),
+        batch_size=args.batch_size,
         num_workers=args.num_workers,
         pin_memory=args.pin_mem,
         drop_last=False,
@@ -635,23 +671,17 @@ def main(args):
             checkpoint = torch.load(args.finetune, map_location="cpu")
 
         checkpoint_model = checkpoint["model"]
-        # state_dict = model.state_dict()
-        # for k in [
-        #     "head.weight",
-        #     "head.bias",
-        #     "head_dist.weight",
-        #     "head_dist.bias",
-        #     "pos_embed",
-        #     "patch_embed.proj.weight",
-        #     "jigsaw.4.weight",
-        #     "jigsaw.4.bias",
-        # ]:
-        #     if (
-        #         k in checkpoint_model
-        #         and checkpoint_model[k].shape != state_dict[k].shape
-        #     ):
-        #         print(f"Removing key {k} from pretrained checkpoint")
-        #         del checkpoint_model[k]
+        state_dict = model.state_dict()
+        for k in [
+            "head.weight",
+            "head.bias",
+        ]:
+            if (
+                k in checkpoint_model
+                and checkpoint_model[k].shape != state_dict[k].shape
+            ):
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
 
         # interpolate position embedding
         # pos_embed_checkpoint = checkpoint_model["pos_embed"]
@@ -817,25 +847,39 @@ def main(args):
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
-
-        train_stats = train_one_epoch(
-            model,
-            criterion,
-            data_loader_train,
-            optimizer,
-            device,
-            epoch,
-            loss_scaler,
-            args.clip_grad,
-            model_ema,
-            mixup_fn,
-            set_training_mode=args.train_mode,  # keep in eval mode for deit finetuning / train mode for training and deit III finetuning
-            args=args,
-        )
+        if args.use_cls:
+            train_stats = train_one_epoch_cls(
+                model,
+                criterion,
+                data_loader_train,
+                optimizer,
+                device,
+                epoch,
+                loss_scaler,
+                args.clip_grad,
+                model_ema,
+                mixup_fn,
+                set_training_mode=args.train_mode,
+                args=args,
+            )
+        else:
+            train_stats = train_one_epoch(
+                model,
+                criterion,
+                data_loader_train,
+                optimizer,
+                device,
+                epoch,
+                loss_scaler,
+                args.clip_grad,
+                model_ema,
+                mixup_fn,
+                set_training_mode=args.train_mode,
+                args=args,
+            )
 
         lr_scheduler.step(epoch)
         if args.output_dir:
-            # current_loss = train_stats["loss_total"]
             checkpoint_path = output_dir / f"checkpoint_{epoch}.pth"
             utils.save_on_master(
                 {
@@ -850,30 +894,47 @@ def main(args):
                 checkpoint_path,
             )
 
-        test_stats = evaluate(data_loader_val, model, device)
-        print(
-            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc']:.1f}%"
-        )
+        if args.use_cls:
+            test_stats = evaluate_cls(data_loader_val, model, device)
+            if max_accuracy < test_stats["acc1_cls"]:
+                max_accuracy = test_stats["acc1_cls"]
+                if args.output_dir:
+                    checkpoint_paths = [output_dir / "best_checkpoint.pth"]
+                    for checkpoint_path in checkpoint_paths:
+                        utils.save_on_master(
+                            {
+                                "model": model_without_ddp.state_dict(),
+                                "optimizer": optimizer.state_dict(),
+                                "lr_scheduler": lr_scheduler.state_dict(),
+                                "epoch": epoch,
+                                "model_ema": get_state_dict(model_ema),
+                                "scaler": loss_scaler.state_dict(),
+                                "args": args,
+                            },
+                            checkpoint_path,
+                        )
+            print(f"Max acc1_cls: {max_accuracy:.2f}%")
 
-        if max_accuracy < test_stats["acc"]:
-            max_accuracy = test_stats["acc"]
-            if args.output_dir:
-                checkpoint_paths = [output_dir / "best_checkpoint.pth"]
-                for checkpoint_path in checkpoint_paths:
-                    utils.save_on_master(
-                        {
-                            "model": model_without_ddp.state_dict(),
-                            "optimizer": optimizer.state_dict(),
-                            "lr_scheduler": lr_scheduler.state_dict(),
-                            "epoch": epoch,
-                            "model_ema": get_state_dict(model_ema),
-                            "scaler": loss_scaler.state_dict(),
-                            "args": args,
-                        },
-                        checkpoint_path,
-                    )
-
-        print(f"Max accuracy: {max_accuracy:.2f}%")
+        else:
+            test_stats = evaluate(data_loader_val, model, device)
+            if max_accuracy < test_stats["acc"]:
+                max_accuracy = test_stats["acc"]
+                if args.output_dir:
+                    checkpoint_paths = [output_dir / "best_checkpoint.pth"]
+                    for checkpoint_path in checkpoint_paths:
+                        utils.save_on_master(
+                            {
+                                "model": model_without_ddp.state_dict(),
+                                "optimizer": optimizer.state_dict(),
+                                "lr_scheduler": lr_scheduler.state_dict(),
+                                "epoch": epoch,
+                                "model_ema": get_state_dict(model_ema),
+                                "scaler": loss_scaler.state_dict(),
+                                "args": args,
+                            },
+                            checkpoint_path,
+                        )
+            print(f"Max accuracy: {max_accuracy:.2f}%")
 
         log_stats = {
             **{f"train_{k}": v for k, v in train_stats.items()},
@@ -890,7 +951,7 @@ def main(args):
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print("Training time {}".format(total_time_str))
     # if dist.get_rank() == 0:
-    #     run.finish() # wandb
+    #     run.finish()  # wandb
 
 
 if __name__ == "__main__":

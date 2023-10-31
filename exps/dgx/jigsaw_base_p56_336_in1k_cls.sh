@@ -1,17 +1,17 @@
 #!/bin/bash
-
-export CUDA_VISIBLE_DEVICES="0,1,2,3"
+export CUDA_VISIBLE_DEVICES="4,5,6,7"
 export THREADS=4
+
 
 python -m torch.distributed.launch \
     --nproc_per_node=$THREADS \
     --use_env \
-    --master_port 20000 \
+    --master_port 40000 \
     main_jigsaw.py \
     --model jigsaw_base_patch56_336 \
     --input-size 336 \
     --permcls 500 \
-    --batch-size 512 \
+    --batch-size 256 \
     --epochs 30 \
     --sched cosine \
     --unscale-lr \
@@ -21,9 +21,10 @@ python -m torch.distributed.launch \
     --bce-loss \
     --data-path "/workspace/data/imagenet/ILSVRC/Data/CLS-LOC" \
     --data-set IMNET \
-    --output_dir ./outputs/in1k_jigsaw_base_patch56_336_e10_c500
+    --use-cls \
+    --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50/checkpoint_9.pth" \
+    --output_dir ./outputs/in1k_jigsaw_base_patch56_336_e10_c50ftcls
+    # --output_dir ./outputs/debug
 
-    # --use-cls \
-    # --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50/checkpoint_9.pth" \
 
     # --finetune /workspace/study/jigsawvit/jigdeit/data/jigsaw_base_results/best_checkpoint.pth \

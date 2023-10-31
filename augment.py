@@ -14,8 +14,6 @@ from timm.data.transforms import (
     ToNumpy,
     ToTensor,
 )
-
-from torchvision import transforms
 import random
 
 
