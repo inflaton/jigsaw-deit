@@ -24,35 +24,23 @@ class JigsawVisionTransformer(VisionTransformer):
         self.num_patches = self.patch_embed.num_patches
 
         if self.use_jigsaw:
-            self.jigsaw = nn.Sequential(
-                *[
-                    nn.Linear(self.embed_dim, self.embed_dim),
-                    nn.ReLU(),
-                    nn.Linear(self.embed_dim, self.embed_dim),
-                    nn.ReLU(),
-                    nn.Linear(self.embed_dim, self.num_patches),
-                ]
-            )
-            # Define a new linear layer for 50-class classification
-            self.classifier = nn.Sequential(
+            self.neck = nn.Sequential(
+                nn.Linear(self.embed_dim, self.embed_dim),
                 nn.ReLU(),
-                nn.Dropout(0.1),  # Optional: dropout for regularization
-                nn.Linear(self.num_patches, 50),  # 50 class classifier
+                nn.Linear(self.embed_dim, self.embed_dim),
+                nn.ReLU(),
             )
-            self.target = torch.arange(self.num_patches)
-
-    def forward_cls(self, x):
-        # add pos embed w/o cls token
-        cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
-        x = torch.cat((cls_tokens, x), dim=1)
-
-        # apply Transformer blocks
-        x = self.blocks(x)
-        x = self.norm(x)
-        x = self.jigsaw(x)
-        x = self.classifier(x[:, 0])
-
-        return x
+            self.jigsaw_head = nn.Linear(self.embed_dim, self.num_patches)
+            self.cls_head = nn.Sequential(
+                # input should be 27648
+                # nn.Linear(self.embed_dim * self.num_patches, 16384),
+                # nn.ReLU(),
+                # nn.Linear(16384, 4096),
+                # nn.ReLU(),
+                nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
+                # nn.Linear(4096, self.num_classes),
+                nn.BatchNorm1d(self.num_classes),
+            )
 
     def random_masking(self, x, target, mask_ratio=0.0):
         """
@@ -70,10 +58,7 @@ class JigsawVisionTransformer(VisionTransformer):
 
         return x_masked, target_masked
 
-    def forward_jigsaw(self, x, target):
-        # masking: length -> length * mask_ratio
-        x, target = self.random_masking(x, target, self.mask_ratio)
-
+    def forward_jigsaw(self, x):
         # append cls token
         cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
         x = torch.cat((cls_tokens, x), dim=1)
@@ -81,51 +66,41 @@ class JigsawVisionTransformer(VisionTransformer):
         # apply Transformer blocks
         x = self.blocks(x)
         x = self.norm(x)
-        x = self.jigsaw(x[:, 1:])
-        return x, target
+        x = self.neck(x[:, 1:])
+        return x
 
-    def infer_jigsaw(self, x):
-        # append cls token
-        cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
-        x = torch.cat((cls_tokens, x), dim=1)
+    def freeze_layers(self):
+        for param in self.patch_embed.parameters():
+            param.requires_grad = False
+        for param in self.forward_jigsaw.parameters():
+            param.requires_grad = False
 
-        # apply Transformer blocks
-        x = self.blocks(x)
-        x = self.norm(x)
-        x = self.jigsaw(x[:, 1:])
-        return x.reshape(-1, self.num_patches)
+    # def infer_jigsaw(self, x):
+    #     # append cls token
+    #     cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
+    #     x = torch.cat((cls_tokens, x), dim=1)
 
-    def _forward(self, x, target):
-        x = self.patch_embed(x)
-        if self.use_jigsaw:
-            # if self.training:
-            pred_jigsaw, targets_jigsaw = self.forward_jigsaw(x, target)
-            outs = Munch()
-            # dim: [N * num_patches, num_patches]
-            outs.pred_jigsaw = pred_jigsaw
-            # dim: [N * num_patches]
-            outs.gt_jigsaw = targets_jigsaw
-            # else:
-            #     pred_jigsaw = self.infer_jigsaw(x)
-            #     outs = Munch()
-            #     outs.pred_jigsaw = pred_jigsaw
+    #     # apply Transformer blocks
+    #     x = self.blocks(x)
+    #     x = self.norm(x)
+    #     x = self.jigsaw(x[:, 1:])
+    #     return x.reshape(-1, self.num_patches)
 
-        else:
-            raise NotImplementedError("You must use jigsaw!")
-        return outs
-
-    def forward(self, x, target, my_im):
+    def forward(self, x, target, my_im=None):
         outs = Munch()
         x = self.patch_embed(x)
-        my_im = self.patch_embed(my_im)
-        pred_jigsaw, targets_jigsaw = self.forward_jigsaw(x, target)
-
-        pred_cls = self.forward_cls(my_im)
-        outs.sup = pred_cls
-        # dim: [N * num_patches, num_patches]
+        x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
+        x = self.forward_jigsaw(x)
+        pred_jigsaw = self.jigsaw_head(x)
+        # # dim: [N * num_patches, num_patches]
         outs.pred_jigsaw = pred_jigsaw
-        # dim: [N * num_patches]
-        outs.gt_jigsaw = targets_jigsaw
+        # # dim: [N * num_patches]
+        outs.gt_jigsaw = target_jigsaw
+        if my_im is not None:
+            my_im = self.patch_embed(my_im)
+            my_im = self.forward_jigsaw(my_im)
+            pred_cls = self.cls_head(my_im.view(my_im.shape[0], -1))
+            outs.sup = pred_cls
         return outs
 
 
@@ -463,7 +438,7 @@ def jigsaw_small_patch56_336(
         use_jigsaw=use_jigsaw,
         img_size=336,
         patch_size=56,
-        embed_dim=768,
+        embed_dim=384,
         depth=12,
         num_heads=6,
         mlp_ratio=4,
@@ -491,7 +466,7 @@ def jigsaw_tiny_patch56_336(
         use_jigsaw=use_jigsaw,
         img_size=336,
         patch_size=56,
-        embed_dim=192,
+        embed_dim=192,  # WARN: if change please also change head dimension
         depth=12,
         num_heads=3,
         mlp_ratio=4,

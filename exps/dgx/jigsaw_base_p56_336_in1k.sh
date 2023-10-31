@@ -11,19 +11,19 @@ python -m torch.distributed.launch \
     --model jigsaw_base_patch56_336 \
     --input-size 336 \
     --permcls 500 \
-    --batch-size 512 \
+    --batch-size 256 \
     --epochs 30 \
     --sched cosine \
     --unscale-lr \
-    --lr 1e-3 \
-    --min-lr 1e-7 \
+    --lr 5e-4 \
+    --min-lr 1e-8 \
     --mask-ratio 0.0 \
     --bce-loss \
     --data-path "/workspace/data/imagenet/ILSVRC/Data/CLS-LOC" \
     --data-set IMNET \
-    --output_dir ./outputs/in1k_jigsaw_base_patch56_336_e10_c500
+    --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50/checkpoint_9.pth" \
+    --output_dir ./outputs/in1k_jigsaw_base_patch56_336_e10_c50ftc500_bs256
 
     # --use-cls \
-    # --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50/checkpoint_9.pth" \
 
     # --finetune /workspace/study/jigsawvit/jigdeit/data/jigsaw_base_results/best_checkpoint.pth \

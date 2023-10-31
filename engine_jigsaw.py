@@ -17,6 +17,7 @@ import utils
 import torch.nn.functional as F
 from geomloss import SamplesLoss
 
+import pdb
 import wandb
 import torch.distributed as dist
 
@@ -53,6 +54,8 @@ def train_one_epoch(
         #     targets = targets.gt(0.0).type(targets.dtype)
 
         with torch.cuda.amp.autocast():
+            if args.freeze:
+                model.freeze_layers()
             outputs = model(images, targets)
             pred_jigsaw = outputs.pred_jigsaw
             gt_jigsaw = outputs.gt_jigsaw
@@ -118,14 +121,14 @@ def train_one_epoch(
         metric_logger.update(loss_jigsaw=loss_jigsaw_value)
         metric_logger.update(jigsaw_acc=running_accuracy)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
-        # if dist.get_rank() == 0:
-        #     wandb.log(
-        #         {
-        #             "total_loss": loss_value,
-        #             "jigsaw_loss": loss_jigsaw_value,
-        #             "jigsaw_acc": running_accuracy,
-        #         }
-        #     )
+        if dist.get_rank() == 0:
+            wandb.log(
+                {
+                    "total_loss": loss_value,
+                    "jigsaw_loss": loss_jigsaw_value,
+                    "jigsaw_acc": running_accuracy,
+                }
+            )
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
@@ -166,27 +169,28 @@ def train_one_epoch_cls(
             output = model(images, targets, my_images)
 
             # preprocess imnet output
-            pred_jigsaw_prob = F.softmax(output.pred_jigsaw, dim=-1)
-            gt_jigsaw_one_hot = F.one_hot(
-                output.gt_jigsaw, num_classes=pred_jigsaw_prob.size(-1)
-            ).float()
+            # pred_jigsaw_prob = F.softmax(output.pred_jigsaw, dim=-1)
+            # gt_jigsaw_one_hot = F.one_hot(
+            #     output.gt_jigsaw, num_classes=pred_jigsaw_prob.size(-1)
+            # ).float()
+            # # BCE LOSS
+            # loss_jigsaw = criterion(pred_jigsaw_prob, gt_jigsaw_one_hot)
 
-            # BCE LOSS
-            loss_jigsaw = criterion(pred_jigsaw_prob, gt_jigsaw_one_hot)
             # CrossEntropy LOSS for 50-class classification
-            loss_cls = cls_criterion(output.sup, my_labels) * 0.1
+            loss_cls = cls_criterion(output.sup, my_labels)
 
-            loss = loss_jigsaw + loss_cls
+            # loss = loss_jigsaw * 0.0 + loss_cls  # WARN: remove
+            loss = loss_cls  # WARN: remove
 
         if not math.isfinite(loss.item()):
             print("Loss is {}, stopping training".format(loss.item()))
             sys.exit(1)
 
-        correct_preds_jigsaw = (
-            torch.argmax(pred_jigsaw_prob, dim=-1)
-            == torch.argmax(gt_jigsaw_one_hot, dim=-1)
-        ).all(dim=-1)
-        batch_acc_jigsaw = correct_preds_jigsaw.float().mean().item()
+        # correct_preds_jigsaw = (
+        #     torch.argmax(pred_jigsaw_prob, dim=-1)
+        #     == torch.argmax(gt_jigsaw_one_hot, dim=-1)
+        # ).all(dim=-1)
+        # batch_acc_jigsaw = correct_preds_jigsaw.float().mean().item()
 
         acc1_cls = accuracy(output.sup, my_labels, topk=(1,))[0]
         acc5_cls = accuracy(output.sup, my_labels, topk=(5,))[0]
@@ -210,9 +214,9 @@ def train_one_epoch_cls(
             model_ema.update(model)
 
         metric_logger.update(loss_total=loss.item())
-        metric_logger.update(loss_jigsaw=loss_jigsaw.item())
+        # metric_logger.update(loss_jigsaw=loss_jigsaw.item())
         metric_logger.update(loss_cls=loss_cls.item())
-        metric_logger.update(jigsaw_acc=batch_acc_jigsaw)
+        # metric_logger.update(jigsaw_acc=batch_acc_jigsaw)
         metric_logger.update(acc1_cls=acc1_cls.item())
         metric_logger.update(acc5_cls=acc5_cls.item())
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
@@ -314,15 +318,15 @@ def evaluate_cls(data_loader, model, device):
         with torch.cuda.amp.autocast():
             output = model(images, targets, my_images)
             # preprocess imnet output
-            pred_jigsaw_prob = F.softmax(output.pred_jigsaw, dim=-1)
-            gt_jigsaw_one_hot = F.one_hot(
-                output.gt_jigsaw, num_classes=pred_jigsaw_prob.size(-1)
-            ).float()
-
+            # pred_jigsaw_prob = F.softmax(output.pred_jigsaw, dim=-1)
+            # gt_jigsaw_one_hot = F.one_hot(
+            #     output.gt_jigsaw, num_classes=pred_jigsaw_prob.size(-1)
+            # ).float()
             # BCE LOSS
-            loss_jigsaw = criterion(pred_jigsaw_prob, gt_jigsaw_one_hot)
+            # loss_jigsaw = criterion(pred_jigsaw_prob, gt_jigsaw_one_hot)
+
             # CrossEntropy LOSS for 50-class classification
-            loss_cls = criterion(output.sup, my_labels) * 0.1
+            loss_cls = criterion(output.sup, my_labels)
             # SINKHORN LOSS
             # loss_jigsaw = sinkhorn_loss_fn(
             #     pred_jigsaw_prob, gt_jigsaw_one_hot
@@ -330,14 +334,15 @@ def evaluate_cls(data_loader, model, device):
 
             # CE LOSS
             # loss_jigsaw = criterion(outputs.pred_jigsaw, outputs.gt_jigsaw)
-            loss = loss_jigsaw + loss_cls
+            # loss = loss_jigsaw * 0.0 + loss_cls  # WARN: remove
+            loss = loss_cls  # WARN: remove
 
         # acc1, acc5 = accuracy(output.sup, targets, topk=(1, 5))
-        correct_preds_jigsaw = (
-            torch.argmax(pred_jigsaw_prob, dim=-1)
-            == torch.argmax(gt_jigsaw_one_hot, dim=-1)
-        ).all(dim=-1)
-        batch_acc_jigsaw = correct_preds_jigsaw.float().mean().item()
+        # correct_preds_jigsaw = (
+        #     torch.argmax(pred_jigsaw_prob, dim=-1)
+        #     == torch.argmax(gt_jigsaw_one_hot, dim=-1)
+        # ).all(dim=-1)
+        # batch_acc_jigsaw = correct_preds_jigsaw.float().mean().item()
 
         acc1_cls = accuracy(output.sup, my_labels, topk=(1,))[0]
         acc5_cls = accuracy(output.sup, my_labels, topk=(5,))[0]
@@ -345,12 +350,16 @@ def evaluate_cls(data_loader, model, device):
         metric_logger.update(loss=loss.item())
         metric_logger.meters["acc1_cls"].update(acc1_cls.item(), n=images.size(0))
         metric_logger.meters["acc5_cls"].update(acc5_cls.item(), n=images.size(0))
-        metric_logger.meters["acc_jigsaw"].update(batch_acc_jigsaw, n=images.size(0))
+        # metric_logger.meters["acc_jigsaw"].update(batch_acc_jigsaw, n=images.size(0))
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print(
-        "* Batch-avg: Jigsaw Acc: {acc.global_avg:.3f}, Cls Acc1: {acc1.global_avg:.3f}, Cls Acc5: {acc5.global_avg:.3f}, loss {losses.global_avg:.3f}".format(
-            acc=metric_logger.acc_jigsaw,
+        "* Batch-avg: \
+            Cls Acc1: {acc1.global_avg:.3f},\
+                Cls Acc5: {acc5.global_avg:.3f},\
+                loss {losses.global_avg:.3f}".format(
+            # Jigsaw Acc: {acc.global_avg:.3f}, \
+            # acc=metric_logger.acc_jigsaw,
             acc1=metric_logger.acc1_cls,
             acc5=metric_logger.acc5_cls,
             losses=metric_logger.loss,

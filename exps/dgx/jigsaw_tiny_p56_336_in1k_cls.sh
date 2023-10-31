@@ -8,9 +8,9 @@ python -m torch.distributed.launch \
     --use_env \
     --master_port 40000 \
     main_jigsaw.py \
-    --model jigsaw_base_patch56_336 \
+    --model jigsaw_tiny_patch56_336 \
     --input-size 336 \
-    --permcls 1000 \
+    --permcls 50 \
     --batch-size 64 \
     --epochs 30 \
     --sched cosine \
@@ -22,10 +22,10 @@ python -m torch.distributed.launch \
     --data-path "/workspace/data/imagenet/ILSVRC/Data/CLS-LOC" \
     --data-set IMNET \
     --use-cls \
-    --output_dir ./outputs/in1k_jigsaw_base_patch56_336_e10_c50ftc1000_cls50
+    --output_dir ./outputs/in1k_jigsaw_tiny_patch56_336_e10_c50ftc50_cls50
 
 
-    # --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50ftc1000_cls*/checkpoint_29.pth" \ # WARN: Is it because finetune?
+    # --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50ftc1000_cls*/checkpoint_29.pth" \
     # --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50ftc500_cls*/checkpoint_29.pth" \
     # --finetune "./outputs/in1k_jigsaw_base_patch56_336_e10_c50/checkpoint_9.pth" \
     # --output_dir ./outputs/debug

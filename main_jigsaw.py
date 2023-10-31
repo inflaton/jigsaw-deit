@@ -41,6 +41,8 @@ def get_args_parser():
     parser.add_argument("--unscale-lr", action="store_true")
     parser.add_argument("--rec", action="store_true")
     parser.set_defaults(rec=False)
+    parser.add_argument("--freeze", action="store_true")
+    parser.set_defaults(freeze=False)
 
     # Model parameters
     parser.add_argument(
@@ -420,14 +422,14 @@ def get_args_parser():
 def main(args):
     utils.init_distributed_mode(args)
 
-    # if dist.get_rank() == 0:
-    #     run = wandb.init(
-    #         # Set the project where this run will be logged
-    #         project="Puzzle",
-    #         name=f"{args.output_dir.replace('./outputs/', '')}",
-    #         # Track hyperparameters and run metadata
-    #         config=vars(args),
-    #     )
+    if dist.get_rank() == 0:
+        run = wandb.init(
+            # Set the project where this run will be logged
+            project="Puzzle",
+            name=f"{args.output_dir.replace('./outputs/', '')}",
+            # Track hyperparameters and run metadata
+            config=vars(args),
+        )
 
     print(args)
 
@@ -491,9 +493,17 @@ def main(args):
     csdataset_val, _ = build_dataset(is_train=False, data_set="CS", args=args)
 
     dataset_train = CustomDataset(
-        dataset_train, csdataset_train, args.permcls, args.use_cls
+        dataset_train,
+        my_dataset=csdataset_train,
+        permcls=args.permcls,
+        use_cls=args.use_cls,
     )
-    dataset_val = CustomDataset(dataset_val, csdataset_val, args.permcls, args.use_cls)
+    dataset_val = CustomDataset(
+        dataset_val,
+        my_dataset=csdataset_val,
+        permcls=args.permcls,
+        use_cls=args.use_cls,
+    )
 
     if True:  # args.distributed:
         num_tasks = utils.get_world_size()
@@ -950,8 +960,8 @@ def main(args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print("Training time {}".format(total_time_str))
-    # if dist.get_rank() == 0:
-    #     run.finish()  # wandb
+    if dist.get_rank() == 0:
+        run.finish()  # wandb
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ import json
 
 from torchvision import datasets, transforms
 from torchvision.datasets.folder import ImageFolder, default_loader
-
+from torchvision.transforms import InterpolationMode
 from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from timm.data import create_transform
 
@@ -104,29 +104,25 @@ def build_dataset(is_train, data_set, args):
 
 
 def build_transform(is_train, args):
-    resize_im = args.input_size > 32
     if is_train:
         # Train with augment
         if args.use_cls:
             # for classification on given permutations
             transform = create_transform(
                 input_size=args.input_size,
+                # no_aug=True, # WARN: THIS LINE IS SUPER IMPORTANT!
+                scale=(1, 1),  # WARN: SUPER IMPORTANT!
+                ratio=(1, 1),
                 is_training=True,
-                color_jitter=args.color_jitter,
                 hflip=0.0,
                 vflip=0.0,
+                color_jitter=args.color_jitter,
                 auto_augment=None,
                 interpolation=args.train_interpolation,
                 re_prob=args.reprob,
-                re_mode=args.remode,
+                re_mode="pixel",
                 re_count=args.recount,
             )
-            if not resize_im:
-                # replace RandomResizedCropAndInterpolation with
-                # RandomCrop
-                transform.transforms[0] = transforms.RandomCrop(
-                    args.input_size, padding=4
-                )
             return transform
         else:
             # for self-supervised learning
@@ -140,13 +136,15 @@ def build_transform(is_train, args):
                 re_mode=args.remode,
                 re_count=args.recount,
             )
-    t = []
-    if resize_im:
+    else:
+        # only resize if eval mode
+        t = []
         # to maintain same ratio w.r.t. 224 images
-        img_size = int(args.input_size)
+        size = int(args.input_size)
         t.append(
-            transforms.Resize(img_size, interpolation="Bicubic"),
+            transforms.Resize(size, interpolation=InterpolationMode.BICUBIC),
         )
-    t.append(transforms.ToTensor())
-    t.append(transforms.Normalize(IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD))
-    return transforms.Compose(t)
+        t.append(transforms.CenterCrop(size))
+        t.append(transforms.ToTensor())
+        t.append(transforms.Normalize(IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD))
+        return transforms.Compose(t)
