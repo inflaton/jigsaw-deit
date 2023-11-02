@@ -902,23 +902,28 @@ def main(args):
             )
 
         lr_scheduler.step(epoch)
-        if args.output_dir:
-            checkpoint_path = output_dir / f"checkpoint_{epoch}.pth"
-            utils.save_on_master(
-                {
-                    "model": model_without_ddp.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "epoch": epoch,
-                    "model_ema": get_state_dict(model_ema),
-                    "scaler": loss_scaler.state_dict(),
-                    "args": args,
-                },
-                checkpoint_path,
-            )
+        # if args.output_dir: # WARN: save best only
+        #     checkpoint_path = output_dir / f"checkpoint_{epoch}.pth"
+        #     utils.save_on_master(
+        #         {
+        #             "model": model_without_ddp.state_dict(),
+        #             "optimizer": optimizer.state_dict(),
+        #             "lr_scheduler": lr_scheduler.state_dict(),
+        #             "epoch": epoch,
+        #             "model_ema": get_state_dict(model_ema),
+        #             "scaler": loss_scaler.state_dict(),
+        #             "args": args,
+        #         },
+        #         checkpoint_path,
+        #     )
 
         if args.use_cls:
             test_stats = evaluate_cls(data_loader_val, model, device)
+            result_str = ", ".join(f"{k}: {v:.3f}" for k, v in test_stats.items())
+            # Print the result to the console
+            if log_dir and utils.is_main_process():
+                with (log_dir / "log.txt").open("a") as f:
+                    f.write(f"Evaluation on epoch {epoch}: {result_str}\n")
             if max_accuracy < test_stats["acc1_cls"]:
                 max_accuracy = test_stats["acc1_cls"]
                 if args.output_dir:
