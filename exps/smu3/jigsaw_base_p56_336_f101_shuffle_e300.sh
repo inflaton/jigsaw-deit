@@ -2,9 +2,9 @@
 
 # export CUDA_VISIBLE_DEVICES="0,1,2,3"
 # export THREADS=4
-export CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7"
-export THREADS=8
-export CONFIG_ID="jigsaw_base_p56_336_in1k_cshuffle_e100"
+export CUDA_VISIBLE_DEVICES="0,1,2,3"
+export THREADS=4
+export CONFIG_ID="jigsaw_base_p56_336_f101_shuffle_e300"
 # export WANDB_MODE=disabled
 
 python -m torch.distributed.launch \
@@ -14,7 +14,7 @@ python -m torch.distributed.launch \
     main_jigsaw.py \
     --model jigsaw_base_patch56_336 \
     --input-size 336 \
-    --batch-size 128 \
+    --batch-size 512 \
     --epochs 300 \
     --sched cosine \
     --unscale-lr \
@@ -22,9 +22,10 @@ python -m torch.distributed.launch \
     --min-lr 1e-8 \
     --mask-ratio 0.0 \
     --bce-loss \
-    --data-path "/workspace/data/imagenet/ILSVRC/Data/CLS-LOC" \
-    --data-set F101 \
+    --data-path "./data/food101/" \
+    --data-set IMNET \
     --output_dir ./outputs/${CONFIG_ID} \
+    --resume /storage/tianzichen/study/jigsaw-deit/outputs/jigsaw_base_p56_336_f101_shuffle_e300/best_checkpoint.pth \
     --log_dir ./logs/${CONFIG_ID}
 
     # --use-cls \

@@ -1,0 +1,183 @@
+batch_size: 512
+epochs: 300
+bce_loss: True
+unscale_lr: True
+rec: False
+freeze: False
+model: jigsaw_base_patch56_336
+input_size: 336
+permcls: 50
+drop: 0.0
+drop_path: 0.1
+model_ema: True
+model_ema_decay: 0.99996
+model_ema_force_cpu: False
+opt: adamw
+opt_eps: 1e-08
+opt_betas: None
+clip_grad: None
+momentum: 0.9
+weight_decay: 0.05
+sched: cosine
+lr: 0.001
+lr_noise: None
+lr_noise_pct: 0.67
+lr_noise_std: 1.0
+warmup_lr: 1e-06
+min_lr: 1e-08
+decay_epochs: 30
+warmup_epochs: 0
+cooldown_epochs: 10
+patience_epochs: 10
+decay_rate: 0.1
+color_jitter: 0.3
+aa: rand-m9-mstd0.5-inc1
+smoothing: None
+train_interpolation: bicubic
+repeated_aug: True
+train_mode: True
+ThreeAugment: False
+src: False
+reprob: 0.25
+remode: pixel
+recount: 1
+resplit: False
+mixup: 0.0
+cutmix: 0.0
+cutmix_minmax: None
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: batch
+teacher_model: regnety_160
+teacher_path: 
+distillation_type: none
+distillation_alpha: 0.5
+distillation_tau: 1.0
+finetune: 
+attn_only: False
+data_path: ./data/food101/
+data_set: IMNET
+nb_classes: 50
+inat_category: name
+output_dir: ./outputs/jigsaw_base_p56_336_f101_shuffle_e300
+log_dir: ./logs/jigsaw_base_p56_336_f101_shuffle_e300
+device: cuda
+seed: 0
+resume: 
+start_epoch: 0
+eval: False
+eval_crop_ratio: 0.875
+dist_eval: False
+num_workers: 10
+pin_mem: True
+world_size: 4
+dist_url: env://
+local_rank: 0
+use_jigsaw: True
+use_cls: False
+lambda_rec: 0.1
+mask_ratio: 0.0
+rank: 0
+gpu: 0
+distributed: True
+dist_backend: nccl
+
+{"train_lr": 0.0010000000000000007, "train_loss_total": 0.7061290360835134, "train_loss_jigsaw": 0.7061290360835134, "train_jigsaw_acc": 0.0, "epoch": 0, "n_parameters": 613877740}
+{"train_lr": 0.0010000000000000007, "train_loss_total": 0.705700874024508, "train_loss_jigsaw": 0.705700874024508, "train_jigsaw_acc": 0.0, "epoch": 1, "n_parameters": 613877740}
+{"train_lr": 0.0009999725849569104, "train_loss_total": 0.7053282321715841, "train_loss_jigsaw": 0.7053282321715841, "train_jigsaw_acc": 0.0, "epoch": 2, "n_parameters": 613877740}
+{"train_lr": 0.0009998903428340058, "train_loss_total": 0.7049807893986605, "train_loss_jigsaw": 0.7049807893986605, "train_jigsaw_acc": 0.0, "epoch": 3, "n_parameters": 613877740}
+{"train_lr": 0.0009997532826500639, "train_loss_total": 0.7046893908053028, "train_loss_jigsaw": 0.7046893908053028, "train_jigsaw_acc": 0.0, "epoch": 4, "n_parameters": 613877740}
+{"train_lr": 0.0009995614194352794, "train_loss_total": 0.7043538072279522, "train_loss_jigsaw": 0.7043538072279522, "train_jigsaw_acc": 0.0, "epoch": 5, "n_parameters": 613877740}
+{"train_lr": 0.0009993147742296126, "train_loss_total": 0.7038288213768784, "train_loss_jigsaw": 0.7038288213768784, "train_jigsaw_acc": 0.0, "epoch": 6, "n_parameters": 613877740}
+{"train_lr": 0.000999013374080494, "train_loss_total": 0.7030117323203963, "train_loss_jigsaw": 0.7030117323203963, "train_jigsaw_acc": 0.0, "epoch": 7, "n_parameters": 613877740}
+{"train_lr": 0.0009986572520398421, "train_loss_total": 0.701398995153758, "train_loss_jigsaw": 0.701398995153758, "train_jigsaw_acc": 5.978954081632653e-05, "epoch": 8, "n_parameters": 613877740}
+{"train_lr": 0.000998246447160456, "train_loss_total": 0.6980672113749445, "train_loss_jigsaw": 0.6980672113749445, "train_jigsaw_acc": 0.0036471619897959183, "epoch": 9, "n_parameters": 613877740}
+{"train_lr": 0.0009977810044917163, "train_loss_total": 0.6927450259729308, "train_loss_jigsaw": 0.6927450259729308, "train_jigsaw_acc": 0.05065170599489796, "epoch": 10, "n_parameters": 613877740}
+{"train_lr": 0.0009972609750746597, "train_loss_total": 0.6897848166373312, "train_loss_jigsaw": 0.6897848166373312, "train_jigsaw_acc": 0.1361706792091837, "epoch": 11, "n_parameters": 613877740}
+{"train_lr": 0.0009966864159363705, "train_loss_total": 0.6876834168726084, "train_loss_jigsaw": 0.6876834168726084, "train_jigsaw_acc": 0.2461834343112245, "epoch": 12, "n_parameters": 613877740}
+{"train_lr": 0.0009960573900837314, "train_loss_total": 0.686827859708241, "train_loss_jigsaw": 0.686827859708241, "train_jigsaw_acc": 0.3083545918367347, "epoch": 13, "n_parameters": 613877740}
+batch_size: 512
+epochs: 300
+bce_loss: True
+unscale_lr: True
+rec: False
+freeze: False
+model: jigsaw_base_patch56_336
+input_size: 336
+permcls: 50
+drop: 0.0
+drop_path: 0.1
+model_ema: True
+model_ema_decay: 0.99996
+model_ema_force_cpu: False
+opt: adamw
+opt_eps: 1e-08
+opt_betas: None
+clip_grad: None
+momentum: 0.9
+weight_decay: 0.05
+sched: cosine
+lr: 0.001
+lr_noise: None
+lr_noise_pct: 0.67
+lr_noise_std: 1.0
+warmup_lr: 1e-06
+min_lr: 1e-08
+decay_epochs: 30
+warmup_epochs: 0
+cooldown_epochs: 10
+patience_epochs: 10
+decay_rate: 0.1
+color_jitter: 0.3
+aa: rand-m9-mstd0.5-inc1
+smoothing: None
+train_interpolation: bicubic
+repeated_aug: True
+train_mode: True
+ThreeAugment: False
+src: False
+reprob: 0.25
+remode: pixel
+recount: 1
+resplit: False
+mixup: 0.0
+cutmix: 0.0
+cutmix_minmax: None
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: batch
+teacher_model: regnety_160
+teacher_path: 
+distillation_type: none
+distillation_alpha: 0.5
+distillation_tau: 1.0
+finetune: 
+attn_only: False
+data_path: ./data/food101/
+data_set: IMNET
+nb_classes: 50
+inat_category: name
+output_dir: ./outputs/jigsaw_base_p56_336_f101_shuffle_e300
+log_dir: ./logs/jigsaw_base_p56_336_f101_shuffle_e300
+device: cuda
+seed: 0
+resume: /storage/tianzichen/study/jigsaw-deit/outputs/jigsaw_base_p56_336_f101_shuffle_e300/best_checkpoint.pth
+start_epoch: 14
+eval: False
+eval_crop_ratio: 0.875
+dist_eval: False
+num_workers: 10
+pin_mem: True
+world_size: 4
+dist_url: env://
+local_rank: 0
+use_jigsaw: True
+use_cls: False
+lambda_rec: 0.1
+mask_ratio: 0.0
+rank: 0
+gpu: 0
+distributed: True
+dist_backend: nccl
+
+{"train_lr": 0.0009946362201198313, "train_loss_total": 0.68651622971372, "train_loss_jigsaw": 0.68651622971372, "train_jigsaw_acc": 0.34631928943452384, "epoch": 14, "n_parameters": 613877740}
