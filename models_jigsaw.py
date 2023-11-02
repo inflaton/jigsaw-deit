@@ -31,6 +31,13 @@ class JigsawVisionTransformer(VisionTransformer):
                 nn.ReLU(),
             )
             self.jigsaw_head = nn.Linear(self.embed_dim, self.num_patches)
+
+            # x = torch.sigmoid(self.fc2(x))
+            # x = x.view(bs, self.patch_num, self.patch_num)
+            # x = self.sinkhorn(x, self.sinkhorn_iter)
+            # # x dim: bs x patch_num x patch_num
+            # x = x.view(bs, -1)
+
             self.cls_head = nn.Sequential(
                 # input should be 27648
                 # nn.Linear(self.embed_dim * self.num_patches, 16384),
@@ -41,6 +48,15 @@ class JigsawVisionTransformer(VisionTransformer):
                 # nn.Linear(4096, self.num_classes),
                 nn.BatchNorm1d(self.num_classes),
             )
+
+    def sinkhorn(self, A, n_iter=5):
+        """
+        Sinkhorn iterations.
+        """
+        for _ in range(n_iter):
+            A = A / A.sum(dim=1, keepdim=True)
+            A = A / A.sum(dim=2, keepdim=True)
+        return A
 
     def random_masking(self, x, target, mask_ratio=0.0):
         """
