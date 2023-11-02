@@ -368,7 +368,14 @@ def get_args_parser():
     )
 
     parser.add_argument(
-        "--output_dir", default="", help="path where to save, empty for no saving"
+        "--output_dir",
+        default="./outputs/debug",
+        help="path where to save, empty for no saving",
+    )
+    parser.add_argument(
+        "--log_dir",
+        default="./logs/debug",
+        help="path where to save, empty for no saving",
     )
     parser.add_argument(
         "--device", default="cuda", help="device to use for training / testing"
@@ -682,10 +689,15 @@ def main(args):
 
         checkpoint_model = checkpoint["model"]
         state_dict = model.state_dict()
-        for k in [
+        keys_to_del = [
             "head.weight",
             "head.bias",
-        ]:
+            "head_dist.weight",
+            "head_dist.bias",
+            "cls_head.0.weight",
+            "cls_head.0.bias",
+        ]
+        for k in keys_to_del:
             if (
                 k in checkpoint_model
                 and checkpoint_model[k].shape != state_dict[k].shape
@@ -815,6 +827,7 @@ def main(args):
     # )
 
     output_dir = Path(args.output_dir)
+    log_dir = Path(args.log_dir)
     if args.resume:
         if args.resume.startswith("https"):
             checkpoint = torch.hub.load_state_dict_from_url(
@@ -844,8 +857,8 @@ def main(args):
         )
         return
 
-    if output_dir and utils.is_main_process():
-        with (output_dir / "log.txt").open("a") as f:
+    if log_dir and utils.is_main_process():
+        with (log_dir / "log.txt").open("a") as f:
             args_dict = vars(args)
             for key, value in args_dict.items():
                 f.write(f"{key}: {value}\n")
@@ -953,8 +966,8 @@ def main(args):
             "n_parameters": n_parameters,
         }
 
-        if args.output_dir and utils.is_main_process():
-            with (output_dir / "log.txt").open("a") as f:
+        if args.log_dir and utils.is_main_process():
+            with (log_dir / "log.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
 
     total_time = time.time() - start_time
@@ -971,4 +984,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    if args.log_dir:
+        Path(args.log_dir).mkdir(parents=True, exist_ok=True)
     main(args)

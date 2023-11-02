@@ -1,5 +1,4 @@
 data/
-logs/
 .idea/
 __pycache__/
 *.py[cod]
@@ -27,11 +26,9 @@ venv/
 
 # Ignore output, log, and temporary files
 outputs/
-**output**
-output
-logs/
-*.log
-*.log.txt
+**outputs**
+outputs
+*.pth
 
 # Ignore symlinks
 mmcls_output/

@@ -1,0 +1,1 @@
+{"train_lr": 1.0000000000000063e-06, "train_loss_total": 0.6352042323817331, "train_loss_jigsaw": 0.6352042323817331, "epoch": 0, "n_parameters": 87715393}

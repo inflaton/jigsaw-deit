@@ -40,12 +40,12 @@ class JigsawVisionTransformer(VisionTransformer):
 
             self.cls_head = nn.Sequential(
                 # input should be 27648
-                # nn.Linear(self.embed_dim * self.num_patches, 16384),
-                # nn.ReLU(),
-                # nn.Linear(16384, 4096),
-                # nn.ReLU(),
-                nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
-                # nn.Linear(4096, self.num_classes),
+                nn.Linear(self.embed_dim * self.num_patches, 16384),
+                nn.ReLU(),
+                nn.Linear(16384, 4096),
+                nn.ReLU(),
+                # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
+                nn.Linear(4096, self.num_classes),
                 nn.BatchNorm1d(self.num_classes),
             )
 
@@ -88,7 +88,15 @@ class JigsawVisionTransformer(VisionTransformer):
     def freeze_layers(self):
         for param in self.patch_embed.parameters():
             param.requires_grad = False
-        for param in self.forward_jigsaw.parameters():
+        for param in self.cls_token.parameters():
+            param.requires_grad = False
+        for param in self.blocks.parameters():
+            param.requires_grad = False
+        for param in self.norm.parameters():
+            param.requires_grad = False
+        for param in self.neck.parameters():
+            param.requires_grad = False
+        for param in self.jigsaw_head.parameters():
             param.requires_grad = False
 
     # def infer_jigsaw(self, x):
@@ -104,14 +112,14 @@ class JigsawVisionTransformer(VisionTransformer):
 
     def forward(self, x, target, my_im=None):
         outs = Munch()
-        x = self.patch_embed(x)
-        x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
-        x = self.forward_jigsaw(x)
-        pred_jigsaw = self.jigsaw_head(x)
-        # # dim: [N * num_patches, num_patches]
-        outs.pred_jigsaw = pred_jigsaw
-        # # dim: [N * num_patches]
-        outs.gt_jigsaw = target_jigsaw
+        # x = self.patch_embed(x)
+        # x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
+        # x = self.forward_jigsaw(x)
+        # pred_jigsaw = self.jigsaw_head(x)
+        # # # dim: [N * num_patches, num_patches]
+        # outs.pred_jigsaw = pred_jigsaw
+        # # # dim: [N * num_patches]
+        # outs.gt_jigsaw = target_jigsaw
         if my_im is not None:
             my_im = self.patch_embed(my_im)
             my_im = self.forward_jigsaw(my_im)
