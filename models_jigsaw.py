@@ -38,9 +38,33 @@ class JigsawVisionTransformer(VisionTransformer):
             # # x dim: bs x patch_num x patch_num
             # x = x.view(bs, -1)
 
+            # For small model 384
+            # self.cls_head = nn.Sequential(
+            #     nn.Linear(self.embed_dim * self.num_patches, 16384), # 13824 -> 16384
+            #     nn.ReLU(),
+            #     nn.Linear(16384, 4096),
+            #     nn.ReLU(),
+            #     # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
+            #     nn.Linear(4096, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # ) # ATTN: Original try: classifier head with three layers for small
+
+            # For small model 384 # ATTN: second try: classifier for small but deeper
+            # self.cls_head = nn.Sequential(
+            #     nn.Linear(self.embed_dim * self.num_patches, 8192),  # 13824 -> 16384
+            #     nn.ReLU(),
+            #     nn.Linear(8192, 4096),
+            #     nn.ReLU(),
+            #     nn.Linear(4096, 2048),
+            #     nn.ReLU(),
+            #     nn.Linear(2048, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # )  # ATTN: Original try: classifier head with three layers for small
+
+            # For base model 768
             self.cls_head = nn.Sequential(
                 # input should be 27648
-                nn.Linear(self.embed_dim * self.num_patches, 16384),
+                nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
                 nn.ReLU(),
                 nn.Linear(16384, 4096),
                 nn.ReLU(),
@@ -65,13 +89,16 @@ class JigsawVisionTransformer(VisionTransformer):
         x: [N, L, D], sequence
         """
         N, L, D = x.shape  # batch, length, dim
-
-        # keep the first subset
         len_keep = int(L * (1 - mask_ratio))
+
+        # WARN: please remove these 3 line if using target
+        noise = torch.rand(N, L, device=x.device)
+        ids_shuffle = torch.argsort(noise, dim=1)
+        target = ids_shuffle
+
         ids_keep = target[:, :len_keep]  # N, len_keep
         x_masked = torch.gather(x, dim=1, index=ids_keep.unsqueeze(-1).repeat(1, 1, D))
         target_masked = ids_keep
-
         return x_masked, target_masked
 
     def forward_jigsaw(self, x):
@@ -112,14 +139,14 @@ class JigsawVisionTransformer(VisionTransformer):
 
     def forward(self, x, target, my_im=None):
         outs = Munch()
-        # x = self.patch_embed(x)
-        # x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
-        # x = self.forward_jigsaw(x)
-        # pred_jigsaw = self.jigsaw_head(x)
-        # # # dim: [N * num_patches, num_patches]
-        # outs.pred_jigsaw = pred_jigsaw
-        # # # dim: [N * num_patches]
-        # outs.gt_jigsaw = target_jigsaw
+        x = self.patch_embed(x)
+        x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
+        x = self.forward_jigsaw(x)
+        pred_jigsaw = self.jigsaw_head(x)
+        # # dim: [N * num_patches, num_patches]
+        outs.pred_jigsaw = pred_jigsaw
+        # # dim: [N * num_patches]
+        outs.gt_jigsaw = target_jigsaw
         if my_im is not None:
             my_im = self.patch_embed(my_im)
             my_im = self.forward_jigsaw(my_im)

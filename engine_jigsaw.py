@@ -220,17 +220,15 @@ def train_one_epoch_cls(
         metric_logger.update(acc1_cls=acc1_cls.item())
         metric_logger.update(acc5_cls=acc5_cls.item())
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
-        # if dist.get_rank() == 0:
-        #     wandb.log(
-        #         {
-        #             "total_loss": loss.item(),
-        #             "cls_loss": loss_cls.item(),
-        #             "jigsaw_loss": loss_jigsaw.item(),
-        #             "jigsaw_acc": batch_acc_jigsaw,
-        #             "cls_acc1": acc1_cls.item(),
-        #             "cls_acc5": acc5_cls.item(),
-        #         }
-        #     )
+        if dist.get_rank() == 0:
+            wandb.log(
+                {
+                    "total_loss": loss.item(),
+                    "cls_loss": loss_cls.item(),
+                    "cls_acc1": acc1_cls.item(),
+                    "cls_acc5": acc5_cls.item(),
+                }
+            )
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
