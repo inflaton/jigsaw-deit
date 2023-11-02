@@ -1,5 +1,5 @@
 batch_size: 128
-epochs: 50
+epochs: 100
 bce_loss: True
 unscale_lr: True
 rec: False
@@ -59,8 +59,8 @@ data_path: /workspace/data/imagenet/ILSVRC/Data/CLS-LOC
 data_set: IMNET
 nb_classes: 50
 inat_category: name
-output_dir: ./outputs/jigsaw_small_p56_336_in1k_c1000frcl50_1e-7bs128e50
-log_dir: ./logs/jigsaw_small_p56_336_in1k_c1000frcl50_1e-7bs128e50
+output_dir: ./outputs/jigsaw_small_p56_336_in1k_c1000frcl50_1e-7bs128e100
+log_dir: ./logs/jigsaw_small_p56_336_in1k_c1000frcl50_1e-7bs128e100
 device: cuda
 seed: 0
 resume: 
