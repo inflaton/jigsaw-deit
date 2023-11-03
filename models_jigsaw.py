@@ -85,7 +85,9 @@ class JigsawVisionTransformer(VisionTransformer):
             # )
 
             self.cls_head = JigsawNet(
-                n_classes=self.num_classes, num_features=self.embed_dim
+                n_classes=self.num_classes,
+                num_patches=self.num_patches,
+                num_features=self.embed_dim,
             )
 
     def sinkhorn(self, A, n_iter=5):
