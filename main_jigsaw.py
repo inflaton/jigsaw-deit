@@ -933,20 +933,20 @@ def main(args):
             )
 
         lr_scheduler.step(epoch)
-        if args.output_dir:  # WARN: save best only
-            checkpoint_path = output_dir / f"checkpoint_{epoch}.pth"
-            utils.save_on_master(
-                {
-                    "model": model_without_ddp.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                    "lr_scheduler": lr_scheduler.state_dict(),
-                    "epoch": epoch,
-                    "model_ema": get_state_dict(model_ema),
-                    "scaler": loss_scaler.state_dict(),
-                    "args": args,
-                },
-                checkpoint_path,
-            )
+        # if args.output_dir:  # WARN: save best only
+        #     checkpoint_path = output_dir / f"checkpoint_{epoch}.pth"
+        #     utils.save_on_master(
+        #         {
+        #             "model": model_without_ddp.state_dict(),
+        #             "optimizer": optimizer.state_dict(),
+        #             "lr_scheduler": lr_scheduler.state_dict(),
+        #             "epoch": epoch,
+        #             "model_ema": get_state_dict(model_ema),
+        #             "scaler": loss_scaler.state_dict(),
+        #             "args": args,
+        #         },
+        #         checkpoint_path,
+        #     )
 
         if args.use_cls:
             test_stats = evaluate_cls(data_loader_val, model, device)
@@ -959,19 +959,19 @@ def main(args):
                 max_accuracy = test_stats["acc1_cls"]
                 if args.output_dir:
                     checkpoint_paths = [output_dir / "best_checkpoint.pth"]
-                    # for checkpoint_path in checkpoint_paths:
-                    #     utils.save_on_master(
-                    #         {
-                    #             "model": model_without_ddp.state_dict(),
-                    #             "optimizer": optimizer.state_dict(),
-                    #             "lr_scheduler": lr_scheduler.state_dict(),
-                    #             "epoch": epoch,
-                    #             "model_ema": get_state_dict(model_ema),
-                    #             "scaler": loss_scaler.state_dict(),
-                    #             "args": args,
-                    #         },
-                    #         checkpoint_path,
-                    #     )
+                    for checkpoint_path in checkpoint_paths:
+                        utils.save_on_master(
+                            {
+                                "model": model_without_ddp.state_dict(),
+                                "optimizer": optimizer.state_dict(),
+                                "lr_scheduler": lr_scheduler.state_dict(),
+                                "epoch": epoch,
+                                "model_ema": get_state_dict(model_ema),
+                                "scaler": loss_scaler.state_dict(),
+                                "args": args,
+                            },
+                            checkpoint_path,
+                        )
             print(f"Max acc1_cls: {max_accuracy:.2f}%")
 
         else:

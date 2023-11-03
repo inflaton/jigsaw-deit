@@ -85,7 +85,7 @@ class JigsawVisionTransformer(VisionTransformer):
             # )
 
             self.cls_head = JigsawNet(
-                n_classes=self.num_classes,
+                num_classes=self.num_classes,
                 num_patches=self.num_patches,
                 num_features=self.embed_dim,
             )
