@@ -723,14 +723,16 @@ def main(args):
             "head.bias",
             "head_dist.weight",
             "head_dist.bias",
-            "cls_head.0.weight",
-            "cls_head.0.bias",
         ]
         for k in keys_to_del:
             if (
                 k in checkpoint_model
                 and checkpoint_model[k].shape != state_dict[k].shape
             ):
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
+        for k in list(checkpoint_model.keys()):
+            if k.startswith("cls_head."):  # Check if the key starts with "cls_head."
                 print(f"Removing key {k} from pretrained checkpoint")
                 del checkpoint_model[k]
 

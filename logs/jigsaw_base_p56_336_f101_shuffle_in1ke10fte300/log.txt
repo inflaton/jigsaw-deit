@@ -279,3 +279,4 @@ dist_backend: nccl
 {"train_lr": 0.0007081433147262395, "train_loss_total": 0.6844609516953665, "train_loss_jigsaw": 0.6844609516953665, "train_jigsaw_acc": 0.5721919952876984, "epoch": 110, "n_parameters": 613877740}
 {"train_lr": 0.0007033712878546835, "train_loss_total": 0.6844685084763027, "train_loss_jigsaw": 0.6844685084763027, "train_jigsaw_acc": 0.5702969990079365, "epoch": 111, "n_parameters": 613877740}
 {"train_lr": 0.0006985769595779372, "train_loss_total": 0.6844737023588211, "train_loss_jigsaw": 0.6844737023588211, "train_jigsaw_acc": 0.5725058903769841, "epoch": 112, "n_parameters": 613877740}
+{"train_lr": 0.0006937608556481195, "train_loss_total": 0.6844563268952899, "train_loss_jigsaw": 0.6844563268952899, "train_jigsaw_acc": 0.5730755518353174, "epoch": 113, "n_parameters": 613877740}

@@ -160,7 +160,7 @@ class JigsawVisionTransformer(VisionTransformer):
         if my_im is not None:
             my_im = self.patch_embed(my_im)
             my_im = self.forward_jigsaw(my_im)
-            pred_cls = self.cls_head(my_im.view(my_im.shape[0], -1))
+            pred_cls = self.cls_head2(my_im.view(my_im.shape[0], -1))
             outs.sup = pred_cls
         return outs
 
