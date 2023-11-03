@@ -61,12 +61,22 @@ class JigsawVisionTransformer(VisionTransformer):
             #     nn.BatchNorm1d(self.num_classes),
             # )  # ATTN: Original try: classifier head with three layers for small
 
-            # For base model 768
+            # For base model 768: h1
+            # self.cls_head = nn.Sequential(
+            #     # input should be 27648
+            #     nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
+            #     nn.ReLU(),
+            #     nn.Linear(16384, 4096),
+            #     nn.ReLU(),
+            #     # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
+            #     nn.Linear(4096, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # )
+
+            # For base model 768: h2
             self.cls_head = nn.Sequential(
                 # input should be 27648
-                nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
-                nn.ReLU(),
-                nn.Linear(16384, 4096),
+                nn.Linear(self.embed_dim * self.num_patches, 4096),  # 27648 -> 16384
                 nn.ReLU(),
                 # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
                 nn.Linear(4096, self.num_classes),
