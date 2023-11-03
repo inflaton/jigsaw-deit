@@ -83,3 +83,14 @@ distributed: True
 dist_backend: nccl
 
 {"train_lr": 0.0009999999999999783, "train_loss_total": 0.7014528151920183, "train_loss_jigsaw": 0.7014528151920183, "train_jigsaw_acc": 0.017169077238209433, "epoch": 0, "n_parameters": 613877740}
+{"train_lr": 0.0009999999999999783, "train_loss_total": 0.687251748667537, "train_loss_jigsaw": 0.687251748667537, "train_jigsaw_acc": 0.30036127348121505, "epoch": 1, "n_parameters": 613877740}
+{"train_lr": 0.0009999725849569156, "train_loss_total": 0.6861389792449087, "train_loss_jigsaw": 0.6861389792449087, "train_jigsaw_acc": 0.39147588179456433, "epoch": 2, "n_parameters": 613877740}
+{"train_lr": 0.0009998903428340132, "train_loss_total": 0.6858396549030936, "train_loss_jigsaw": 0.6858396549030936, "train_jigsaw_acc": 0.4211092063848921, "epoch": 3, "n_parameters": 613877740}
+{"train_lr": 0.0009997532826500734, "train_loss_total": 0.6856690153455753, "train_loss_jigsaw": 0.6856690153455753, "train_jigsaw_acc": 0.4377209170163869, "epoch": 4, "n_parameters": 613877740}
+{"train_lr": 0.0009995614194352855, "train_loss_total": 0.6855755066402334, "train_loss_jigsaw": 0.6855755066402334, "train_jigsaw_acc": 0.44692527228217427, "epoch": 5, "n_parameters": 613877740}
+{"train_lr": 0.0009993147742296136, "train_loss_total": 0.6854872921173522, "train_loss_jigsaw": 0.6854872921173522, "train_jigsaw_acc": 0.45697972871702636, "epoch": 6, "n_parameters": 613877740}
+{"train_lr": 0.0009990133740804834, "train_loss_total": 0.6854111033377888, "train_loss_jigsaw": 0.6854111033377888, "train_jigsaw_acc": 0.46495616007194246, "epoch": 7, "n_parameters": 613877740}
+{"train_lr": 0.0009986572520398248, "train_loss_total": 0.6853507084669255, "train_loss_jigsaw": 0.6853507084669255, "train_jigsaw_acc": 0.4713783660571543, "epoch": 8, "n_parameters": 613877740}
+{"train_lr": 0.0009982464471604891, "train_loss_total": 0.6853107524385079, "train_loss_jigsaw": 0.6853107524385079, "train_jigsaw_acc": 0.47622214728217427, "epoch": 9, "n_parameters": 613877740}
+{"train_lr": 0.0009977810044917272, "train_loss_total": 0.6852642696776645, "train_loss_jigsaw": 0.6852642696776645, "train_jigsaw_acc": 0.48102065222821744, "epoch": 10, "n_parameters": 613877740}
+{"train_lr": 0.00099726097507466, "train_loss_total": 0.6852362103682819, "train_loss_jigsaw": 0.6852362103682819, "train_jigsaw_acc": 0.48375128022581937, "epoch": 11, "n_parameters": 613877740}
