@@ -957,7 +957,7 @@ def main(args):
                     f.write(f"Evaluation on epoch {epoch}: {result_str}\n")
             if max_accuracy < test_stats["acc1_cls"]:
                 max_accuracy = test_stats["acc1_cls"]
-                if args.output_dir:
+                if args.output_dir and max_accuracy > 0.7:
                     checkpoint_paths = [output_dir / "best_checkpoint.pth"]
                     for checkpoint_path in checkpoint_paths:
                         utils.save_on_master(
