@@ -1,5 +1,6 @@
 # Copyright (c) 2015-present, Facebook, Inc.
 # All rights reserved.
+from JigsawNet import JigsawNet
 import torch
 import torch.nn as nn
 from functools import partial
@@ -62,16 +63,16 @@ class JigsawVisionTransformer(VisionTransformer):
             # )  # ATTN: Original try: classifier head with three layers for small
 
             # For base model 768: h1
-            self.cls_head = nn.Sequential(
-                # input should be 27648
-                nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
-                nn.ReLU(),
-                nn.Linear(16384, 4096),
-                nn.ReLU(),
-                # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
-                nn.Linear(4096, self.num_classes),
-                nn.BatchNorm1d(self.num_classes),
-            )
+            # self.cls_head = nn.Sequential(
+            #     # input should be 27648
+            #     nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
+            #     nn.ReLU(),
+            #     nn.Linear(16384, 4096),
+            #     nn.ReLU(),
+            #     # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
+            #     nn.Linear(4096, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # )
 
             # For base model 768: h2
             # self.cls_head = nn.Sequential(
@@ -82,6 +83,10 @@ class JigsawVisionTransformer(VisionTransformer):
             #     nn.Linear(4096, self.num_classes),
             #     nn.BatchNorm1d(self.num_classes),
             # )
+
+            self.cls_head = JigsawNet(
+                n_classes=self.num_classes, num_features=self.embed_dim
+            )
 
     def sinkhorn(self, A, n_iter=5):
         """
