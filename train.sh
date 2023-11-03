@@ -6,7 +6,7 @@ pwd
 
 nvidia-smi
 
-# pip install -q timm
+# pip install -q timm wandb munch
 
 # use stable learning rate 1e-3
 export CONFIG_ID="jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024"
@@ -25,7 +25,7 @@ torchrun main_jigsaw.py \
     --sched cosine \
     --mask-ratio 0.0 \
     --bce-loss \
-    --data-path "./data/train/" \
+    --data-path "./data/" \
     --data-set IMNET \
     --finetune "./data/checkpoints/best_checkpoint_e100.pth" \
     --use-cls \
