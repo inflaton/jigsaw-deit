@@ -14,7 +14,7 @@ export CONFIG_ID="jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024"
 torchrun main_jigsaw.py \
     --model jigsaw_base_patch56_336 \
     --input-size 336 \
-    --batch-size 256 \
+    --batch-size 768 \
     --epochs 50 \
     --unscale-lr \
     --lr 1e-3 \
