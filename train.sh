@@ -22,7 +22,7 @@ torchrun main_jigsaw.py \
     --sched cosine \
     --mask-ratio 0.0 \
     --bce-loss \
-    --data-path "./data/" \
+    --data-path "./data/cs" \
     --data-set CS \
     --finetune "./data/checkpoints/best_checkpoint_e100.pth" \
     --use-cls \
