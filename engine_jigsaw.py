@@ -56,7 +56,7 @@ def train_one_epoch(
 
         with torch.cuda.amp.autocast():
             if args.freeze:
-                model.freeze_layers()
+                model.module.freeze_layers()
             outputs = model(images, targets)
             pred_jigsaw = outputs.pred_jigsaw
             gt_jigsaw = outputs.gt_jigsaw
@@ -158,16 +158,18 @@ def train_one_epoch_cls(
     cls_criterion = torch.nn.CrossEntropyLoss()
 
     for data in metric_logger.log_every(data_loader, print_freq, header):
-        images = data["image"].to(device, non_blocking=True)
-        targets = data["ids_shuffle"].to(device, non_blocking=True, dtype=torch.int64)
+        # images = data["image"].to(device, non_blocking=True) # WRARN: not passign in
+        # targets = data["ids_shuffle"].to(device, non_blocking=True, dtype=torch.int64)
         my_images = data["my_image"].to(device, non_blocking=True)
         my_labels = data["my_label"].to(device, non_blocking=True, dtype=torch.int64)
 
-        if mixup_fn is not None:
-            images, targets = mixup_fn(images, targets)
+        # if mixup_fn is not None:
+        #     images, targets = mixup_fn(images, targets)
 
         with torch.cuda.amp.autocast():
-            output = model(images, targets, my_images)
+            if args.freeze:
+                model.module.freeze_layers()
+            output = model(my_im=my_images)
 
             # preprocess imnet output
             # pred_jigsaw_prob = F.softmax(output.pred_jigsaw, dim=-1)
@@ -308,14 +310,14 @@ def evaluate_cls(data_loader, model, device):
     model.eval()
 
     for data in metric_logger.log_every(data_loader, 10, header):
-        images = data["image"].to(device, non_blocking=True)
-        targets = data["ids_shuffle"].to(device, non_blocking=True, dtype=torch.int64)
+        # images = data["image"].to(device, non_blocking=True)
+        # targets = data["ids_shuffle"].to(device, non_blocking=True, dtype=torch.int64)
         my_images = data["my_image"].to(device, non_blocking=True)
         my_labels = data["my_label"].to(device, non_blocking=True, dtype=torch.int64)
 
         # compute output
         with torch.cuda.amp.autocast():
-            output = model(images, targets, my_images)
+            output = model(my_im=my_images)
             # preprocess imnet output
             # pred_jigsaw_prob = F.softmax(output.pred_jigsaw, dim=-1)
             # gt_jigsaw_one_hot = F.one_hot(
@@ -347,8 +349,8 @@ def evaluate_cls(data_loader, model, device):
         acc5_cls = accuracy(output.sup, my_labels, topk=(5,))[0]
 
         metric_logger.update(loss=loss.item())
-        metric_logger.meters["acc1_cls"].update(acc1_cls.item(), n=images.size(0))
-        metric_logger.meters["acc5_cls"].update(acc5_cls.item(), n=images.size(0))
+        metric_logger.meters["acc1_cls"].update(acc1_cls.item(), n=my_images.size(0))
+        metric_logger.meters["acc5_cls"].update(acc5_cls.item(), n=my_images.size(0))
         # metric_logger.meters["acc_jigsaw"].update(batch_acc_jigsaw, n=images.size(0))
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()

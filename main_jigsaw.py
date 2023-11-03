@@ -453,6 +453,43 @@ def main(args):
 
     cudnn.benchmark = True
 
+    # Note: original: use both
+    # class CustomDataset(Dataset):
+    #     def __init__(self, dataset, my_dataset, permcls, use_cls=False):
+    #         self.dataset = dataset
+    #         self.permcls = permcls
+    #         self.permset = np.load(f"perm6x6x{self.permcls}.npy")
+    #         self.my_dataset = my_dataset
+    #         self.use_cls = use_cls
+    #         print(f"Loading classification branch: {self.use_cls}")
+
+    #     def __len__(self):
+    #         if self.use_cls:
+    #             return min(len(self.dataset), len(self.my_dataset))
+    #         else:
+    #             return len(self.dataset)
+
+    #     def __getitem__(self, index):
+    #         if self.use_cls:
+    #             # imagenet data
+    #             dataset_index = np.random.randint(len(self.dataset))
+    #             data, _ = self.dataset[dataset_index]
+    #             rand_indices = np.random.randint(0, self.permcls)
+    #             ids_shuffle = self.permset[rand_indices]
+
+    #             # csdata
+    #             my_image, my_label = self.my_dataset[index]
+    #             return {
+    #                 "image": data,
+    #                 "ids_shuffle": ids_shuffle,
+    #                 "my_image": my_image,
+    #                 "my_label": my_label,
+    #             }
+    #         else:
+    #             data, _ = self.dataset[index]
+    #             rand_indices = np.random.randint(0, self.permcls)
+    #             ids_shuffle = self.permset[rand_indices]
+    #             return {"image": data, "ids_shuffle": ids_shuffle}
     class CustomDataset(Dataset):
         def __init__(self, dataset, my_dataset, permcls, use_cls=False):
             self.dataset = dataset
@@ -464,23 +501,15 @@ def main(args):
 
         def __len__(self):
             if self.use_cls:
-                return min(len(self.dataset), len(self.my_dataset))
+                return len(self.my_dataset)
             else:
                 return len(self.dataset)
 
         def __getitem__(self, index):
             if self.use_cls:
-                # imagenet data
-                dataset_index = np.random.randint(len(self.dataset))
-                data, _ = self.dataset[dataset_index]
-                rand_indices = np.random.randint(0, self.permcls)
-                ids_shuffle = self.permset[rand_indices]
-
                 # csdata
                 my_image, my_label = self.my_dataset[index]
                 return {
-                    "image": data,
-                    "ids_shuffle": ids_shuffle,
                     "my_image": my_image,
                     "my_label": my_label,
                 }
@@ -928,19 +957,19 @@ def main(args):
                 max_accuracy = test_stats["acc1_cls"]
                 if args.output_dir:
                     checkpoint_paths = [output_dir / "best_checkpoint.pth"]
-                    for checkpoint_path in checkpoint_paths:
-                        utils.save_on_master(
-                            {
-                                "model": model_without_ddp.state_dict(),
-                                "optimizer": optimizer.state_dict(),
-                                "lr_scheduler": lr_scheduler.state_dict(),
-                                "epoch": epoch,
-                                "model_ema": get_state_dict(model_ema),
-                                "scaler": loss_scaler.state_dict(),
-                                "args": args,
-                            },
-                            checkpoint_path,
-                        )
+                    # for checkpoint_path in checkpoint_paths:
+                    #     utils.save_on_master(
+                    #         {
+                    #             "model": model_without_ddp.state_dict(),
+                    #             "optimizer": optimizer.state_dict(),
+                    #             "lr_scheduler": lr_scheduler.state_dict(),
+                    #             "epoch": epoch,
+                    #             "model_ema": get_state_dict(model_ema),
+                    #             "scaler": loss_scaler.state_dict(),
+                    #             "args": args,
+                    #         },
+                    #         checkpoint_path,
+                    #     )
             print(f"Max acc1_cls: {max_accuracy:.2f}%")
 
         else:

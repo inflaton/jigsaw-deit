@@ -115,8 +115,6 @@ class JigsawVisionTransformer(VisionTransformer):
     def freeze_layers(self):
         for param in self.patch_embed.parameters():
             param.requires_grad = False
-        for param in self.cls_token.parameters():
-            param.requires_grad = False
         for param in self.blocks.parameters():
             param.requires_grad = False
         for param in self.norm.parameters():
@@ -125,6 +123,7 @@ class JigsawVisionTransformer(VisionTransformer):
             param.requires_grad = False
         for param in self.jigsaw_head.parameters():
             param.requires_grad = False
+        self.cls_token.requires_grad = False
 
     # def infer_jigsaw(self, x):
     #     # append cls token
@@ -137,16 +136,17 @@ class JigsawVisionTransformer(VisionTransformer):
     #     x = self.jigsaw(x[:, 1:])
     #     return x.reshape(-1, self.num_patches)
 
-    def forward(self, x, target, my_im=None):
+    def forward(self, x=None, target=None, my_im=None):
         outs = Munch()
-        x = self.patch_embed(x)
-        x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
-        x = self.forward_jigsaw(x)
-        pred_jigsaw = self.jigsaw_head(x)
-        # # dim: [N * num_patches, num_patches]
-        outs.pred_jigsaw = pred_jigsaw
-        # # dim: [N * num_patches]
-        outs.gt_jigsaw = target_jigsaw
+        if x is not None:
+            x = self.patch_embed(x)
+            x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
+            x = self.forward_jigsaw(x)
+            pred_jigsaw = self.jigsaw_head(x)
+            # # dim: [N * num_patches, num_patches]
+            outs.pred_jigsaw = pred_jigsaw
+            # # dim: [N * num_patches]
+            outs.gt_jigsaw = target_jigsaw
         if my_im is not None:
             my_im = self.patch_embed(my_im)
             my_im = self.forward_jigsaw(my_im)
