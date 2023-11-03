@@ -11,9 +11,6 @@ nvidia-smi
 # use stable learning rate 1e-3
 export CONFIG_ID="jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024"
 
-mkdir -p ./outputs/${CONFIG_ID}
-mkdir -p ./logs/${CONFIG_ID}
-
 torchrun main_jigsaw.py \
     --model jigsaw_base_patch56_336 \
     --input-size 336 \
@@ -26,7 +23,7 @@ torchrun main_jigsaw.py \
     --mask-ratio 0.0 \
     --bce-loss \
     --data-path "./data/" \
-    --data-set IMNET \
+    --data-set CS \
     --finetune "./data/checkpoints/best_checkpoint_e100.pth" \
     --use-cls \
     --output_dir ./outputs/${CONFIG_ID} \
