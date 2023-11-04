@@ -46,7 +46,9 @@ class JigsawTestDataset(Dataset):
             if os.path.exists(image_path):
                 self.image_paths.append(image_path)
 
-        print(f"total image found: {len(self.image_paths)}")
+        print(
+            f"total images found in folder {self.test_image_folder}: {len(self.image_paths)}"
+        )
 
 
 warnings.filterwarnings("ignore")
@@ -85,6 +87,13 @@ parser.add_argument(
     default="data/cs/val",
 )
 parser.add_argument(
+    "-n",
+    "--train_image_folder",
+    type=str,
+    help="Validation image folder",
+    default="data/cs/train",
+)
+parser.add_argument(
     "-r",
     "--result_filename",
     type=str,
@@ -100,6 +109,7 @@ batch_size = args.batch
 checkpoint = args.checkpoint
 test_image_folder = args.test_image_folder
 val_image_folder = args.val_image_folder
+train_image_folder = args.train_image_folder
 result_filename = args.result_filename
 num_classes = 50
 
@@ -108,6 +118,8 @@ print(
     model,
     "\ncheckpoint: ",
     checkpoint,
+    "\ntrain_image_folder: ",
+    train_image_folder,
     "\nval_image_folder: ",
     val_image_folder,
     "\ntest_image_folder: ",
@@ -178,95 +190,51 @@ with torch.no_grad():
         torch.from_numpy(np.array(all_labels)),
         topk=(1,),
     )[0]
-    print(f"acc1_cls: {acc1_cls:.3f}%")
 
-    model_result = []
-    val_set = datasets.ImageFolder(val_image_folder, transform=transform)
-    val_loader = torch.utils.data.DataLoader(val_set, batch_size=batch_size)
+    print(f"acc1_cls: {acc1_cls:.3f}")
 
-    test_set = JigsawTestDataset(
-        test_image_folder=test_image_folder, transform=transform
-    )
-    test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size)
+    mappings = [0] * num_classes
+    for i in range(num_classes):
+        model_result = []
+        test_image_folder = f"{train_image_folder}/{i}"
 
-    for inputs in test_loader:
-        inputs = inputs.to(device)
-        model_batch_result = model(my_im=inputs)
-        model_result.extend(model_batch_result.sup.cpu().numpy())
+        test_set = JigsawTestDataset(
+            test_image_folder=test_image_folder, transform=transform
+        )
+        test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size)
 
-    pred = [np.argmax(i) for i in model_result]
+        for inputs in test_loader:
+            inputs = inputs.to(device)
+            model_batch_result = model(my_im=inputs)
+            model_result.extend(model_batch_result.sup.cpu().numpy())
 
-mappings = [
-    0,
-    1,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    2,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    3,
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
-    36,
-    37,
-    38,
-    39,
-    4,
-    40,
-    41,
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
-    48,
-    49,
-    5,
-    6,
-    7,
-    8,
-    9,
-]
+        pred = [np.argmax(i) for i in model_result]
 
+        average_pred = np.mean(pred)
+        print(f"mean predictions for class {i}: {average_pred:.3f}")
 
-with open(result_filename, "w") as file:
-    count = 0
-    for p in pred:
-        file.write(f"{mappings[p]}\n")
-        count += 1
+        mappings[int(average_pred)] = i
 
-print(f"{count} results saved to: {result_filename}")
+    print(f"mappings: {mappings}")
 
-# compress the results folder
-zip_filename = "data/result.zip"
-path = Path(zip_filename)
-if path.is_file():
-    os.remove(zip_filename)
-with zipfile.ZipFile(zip_filename, "w") as zipf:
-    zipf.write(result_filename, arcname=result_filename)
+    for i in range(num_classes):
+        model_result = []
+        test_image_folder = f"{train_image_folder}/{i}"
 
-print(f"results saved to: {zip_filename}")
+        test_set = JigsawTestDataset(
+            test_image_folder=test_image_folder, transform=transform
+        )
+        test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size)
+
+        for inputs in test_loader:
+            inputs = inputs.to(device)
+            model_batch_result = model(my_im=inputs)
+            model_result.extend(model_batch_result.sup.cpu().numpy())
+
+        pred = [mappings[np.argmax(i)] for i in model_result]
+
+        average_pred = np.mean(pred)
+        print(f"mean predictions for class {i}: {average_pred:.3f}")
 
 # Calculate time elapsed
 end_time = time.time()
