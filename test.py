@@ -264,7 +264,7 @@ path = Path(zip_filename)
 if path.is_file():
     os.remove(zip_filename)
 with zipfile.ZipFile(zip_filename, "w") as zipf:
-    zipf.write(result_filename, arcname=result_filename)
+    zipf.write(result_filename, arcname=result_filename.split("/")[-1])
 
 print(f"results saved to: {zip_filename}")
 
