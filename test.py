@@ -85,6 +85,13 @@ parser.add_argument(
     default="data/cs/val",
 )
 parser.add_argument(
+    "-n",
+    "--train_image_folder",
+    type=str,
+    help="Validation image folder",
+    default="data/cs/train",
+)
+parser.add_argument(
     "-r",
     "--result_filename",
     type=str,
@@ -100,6 +107,7 @@ batch_size = args.batch
 checkpoint = args.checkpoint
 test_image_folder = args.test_image_folder
 val_image_folder = args.val_image_folder
+train_image_folder = args.train_image_folder
 result_filename = args.result_filename
 num_classes = 50
 
@@ -108,6 +116,8 @@ print(
     model,
     "\ncheckpoint: ",
     checkpoint,
+    "\ntrain_image_folder: ",
+    train_image_folder,
     "\nval_image_folder: ",
     val_image_folder,
     "\ntest_image_folder: ",
@@ -196,64 +206,13 @@ with torch.no_grad():
 
     pred = [np.argmax(i) for i in model_result]
 
-mappings = [
-    0,
-    1,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    2,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    3,
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
-    36,
-    37,
-    38,
-    39,
-    4,
-    40,
-    41,
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
-    48,
-    49,
-    5,
-    6,
-    7,
-    8,
-    9,
-]
-
+train_set = datasets.ImageFolder(train_image_folder, transform=transform)
+classes = train_set.classes
 
 with open(result_filename, "w") as file:
     count = 0
     for p in pred:
-        file.write(f"{mappings[p]}\n")
+        file.write(f"{classes[p]}\n")
         count += 1
 
 print(f"{count} results saved to: {result_filename}")

@@ -93,13 +93,6 @@ parser.add_argument(
     help="Validation image folder",
     default="data/cs/train",
 )
-parser.add_argument(
-    "-r",
-    "--result_filename",
-    type=str,
-    help="Result file name",
-    default="data/test.txt",
-)
 
 # Parse the arguments
 args = parser.parse_args()
@@ -110,7 +103,6 @@ checkpoint = args.checkpoint
 test_image_folder = args.test_image_folder
 val_image_folder = args.val_image_folder
 train_image_folder = args.train_image_folder
-result_filename = args.result_filename
 num_classes = 50
 
 print(
@@ -193,29 +185,9 @@ with torch.no_grad():
 
     print(f"acc1_cls: {acc1_cls:.3f}")
 
-    mappings = [0] * num_classes
-    for i in range(num_classes):
-        model_result = []
-        test_image_folder = f"{train_image_folder}/{i}"
-
-        test_set = JigsawTestDataset(
-            test_image_folder=test_image_folder, transform=transform
-        )
-        test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size)
-
-        for inputs in test_loader:
-            inputs = inputs.to(device)
-            model_batch_result = model(my_im=inputs)
-            model_result.extend(model_batch_result.sup.cpu().numpy())
-
-        pred = [np.argmax(i) for i in model_result]
-
-        average_pred = np.mean(pred)
-        print(f"mean predictions for class {i}: {average_pred:.3f}")
-
-        mappings[int(average_pred)] = i
-
-    print(f"mappings: {mappings}")
+    train_set = datasets.ImageFolder(train_image_folder, transform=transform)
+    classes = [int(c) for c in train_set.classes]
+    print(f"classes: {classes}")
 
     for i in range(num_classes):
         model_result = []
@@ -231,7 +203,7 @@ with torch.no_grad():
             model_batch_result = model(my_im=inputs)
             model_result.extend(model_batch_result.sup.cpu().numpy())
 
-        pred = [mappings[np.argmax(i)] for i in model_result]
+        pred = [classes[np.argmax(i)] for i in model_result]
 
         average_pred = np.mean(pred)
         print(f"mean predictions for class {i}: {average_pred:.3f}")
