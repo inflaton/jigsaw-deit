@@ -18,7 +18,7 @@ torchrun main_jigsaw.py \
     --epochs 100 \
     --unscale-lr \
     --lr 1e-3 \
-    --min-lr 1e-5 \
+    --min-lr 1e-6 \
     --sched cosine \
     --mask-ratio 0.0 \
     --bce-loss \

@@ -1,0 +1,879 @@
+Submitting job: /common/home/users/d/dh.huang.2023/code/jigsaw-deit/train.sh
+Current Directory:
+/common/home/users/d/dh.huang.2023/code/jigsaw-deit
+Sat Nov  4 10:30:34 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.104.05             Driver Version: 535.104.05   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A40                     On  | 00000000:81:00.0 Off |                    0 |
+|  0%   30C    P8              23W / 300W |      4MiB / 46068MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+| distributed init (rank 0): env://
+wandb: Currently logged in as: inflaton-sg (inflaton-ai). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.15.12
+wandb: Run data is saved locally in /common2/dh.huang.2023/code/jigsaw-deit/wandb/run-20231104_103040-j2ym0000
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024
+wandb: ⭐️ View project at https://wandb.ai/inflaton-ai/Puzzle
+wandb: 🚀 View run at https://wandb.ai/inflaton-ai/Puzzle/runs/j2ym0000
+Namespace(batch_size=768, epochs=100, bce_loss=True, unscale_lr=True, rec=False, freeze=False, model='jigsaw_base_patch56_336', input_size=336, permcls=50, drop=0.0, drop_path=0.1, model_ema=True, model_ema_decay=0.99996, model_ema_force_cpu=False, opt='adamw', opt_eps=1e-08, opt_betas=None, clip_grad=None, momentum=0.9, weight_decay=0.05, sched='cosine', lr=0.001, lr_noise=None, lr_noise_pct=0.67, lr_noise_std=1.0, warmup_lr=1e-06, min_lr=1e-05, decay_epochs=30, warmup_epochs=0, cooldown_epochs=10, patience_epochs=10, decay_rate=0.1, color_jitter=0.3, aa='rand-m9-mstd0.5-inc1', smoothing=None, train_interpolation='bicubic', repeated_aug=True, train_mode=True, ThreeAugment=False, src=False, reprob=0.25, remode='pixel', recount=1, resplit=False, mixup=0.0, cutmix=0.0, cutmix_minmax=None, mixup_prob=1.0, mixup_switch_prob=0.5, mixup_mode='batch', teacher_model='regnety_160', teacher_path='', distillation_type='none', distillation_alpha=0.5, distillation_tau=1.0, finetune='./data/checkpoints/best_checkpoint_e100.pth', attn_only=False, data_path='./data/cs', data_set='CS', nb_classes=1000, inat_category='name', output_dir='./outputs/jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024', log_dir='./logs/jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024', device='cuda', seed=0, resume='', start_epoch=0, eval=False, eval_crop_ratio=0.875, dist_eval=False, num_workers=10, pin_mem=True, world_size=1, dist_url='env://', local_rank=0, use_jigsaw=True, use_cls=True, lambda_rec=0.1, mask_ratio=0.0, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+Loading classification branch: True
+Loading classification branch: True
+Creating model: jigsaw_base_patch56_336
+Removing key cls_head.0.weight from pretrained checkpoint
+Removing key cls_head.0.bias from pretrained checkpoint
+Removing key cls_head.2.weight from pretrained checkpoint
+Removing key cls_head.2.bias from pretrained checkpoint
+Removing key cls_head.4.weight from pretrained checkpoint
+Removing key cls_head.4.bias from pretrained checkpoint
+Removing key cls_head.5.weight from pretrained checkpoint
+Removing key cls_head.5.bias from pretrained checkpoint
+Removing key cls_head.5.running_mean from pretrained checkpoint
+Removing key cls_head.5.running_var from pretrained checkpoint
+Removing key cls_head.5.num_batches_tracked from pretrained checkpoint
+number of params: 207013868
+using bce loss
+Start training for 100 epochs
+Epoch: [0]  [0/3]  eta: 0:00:55  lr: 0.001000  loss_total: 4.4493 (4.4493)  loss_cls: 4.4493 (4.4493)  acc1_cls: 1.1719 (1.1719)  acc5_cls: 9.1146 (9.1146)  time: 18.5207  data: 16.6427  max mem: 14006
+Epoch: [0]  [2/3]  eta: 0:00:06  lr: 0.001000  loss_total: 4.2062 (4.1895)  loss_cls: 4.2062 (4.1895)  acc1_cls: 8.7240 (6.6840)  acc5_cls: 19.4010 (16.9271)  time: 6.4709  data: 5.5476  max mem: 15917
+Epoch: [0] Total time: 0:00:19 (6.5695 s / it)
+Averaged stats: lr: 0.001000  loss_total: 4.2062 (4.1895)  loss_cls: 4.2062 (4.1895)  acc1_cls: 8.7240 (6.6840)  acc5_cls: 19.4010 (16.9271)
+Test:  [0/1]  eta: 0:00:02  loss: 15.9840 (15.9840)  acc1_cls: 5.5085 (5.5085)  acc5_cls: 13.7712 (13.7712)  time: 2.7952  data: 2.1961  max mem: 15917
+Test: Total time: 0:00:03 (3.0059 s / it)
+* Batch-avg:             Cls Acc1: 5.508,                Cls Acc5: 13.771,                loss 15.984
+Max acc1_cls: 5.51%
+Epoch: [1]  [0/3]  eta: 0:00:38  lr: 0.001000  loss_total: 3.6491 (3.6491)  loss_cls: 3.6491 (3.6491)  acc1_cls: 20.3125 (20.3125)  acc5_cls: 36.0677 (36.0677)  time: 12.9240  data: 12.5005  max mem: 15920
+Epoch: [1]  [2/3]  eta: 0:00:04  lr: 0.001000  loss_total: 3.4780 (3.4786)  loss_cls: 3.4780 (3.4786)  acc1_cls: 20.3125 (20.5729)  acc5_cls: 37.3698 (38.8889)  time: 4.5899  data: 4.1669  max mem: 15920
+Epoch: [1] Total time: 0:00:14 (4.7154 s / it)
+Averaged stats: lr: 0.001000  loss_total: 3.4780 (3.4786)  loss_cls: 3.4780 (3.4786)  acc1_cls: 20.3125 (20.5729)  acc5_cls: 37.3698 (38.8889)
+Test:  [0/1]  eta: 0:00:02  loss: 7.0296 (7.0296)  acc1_cls: 17.1610 (17.1610)  acc5_cls: 30.2966 (30.2966)  time: 2.2337  data: 2.1375  max mem: 15920
+Test: Total time: 0:00:02 (2.4532 s / it)
+* Batch-avg:             Cls Acc1: 17.161,                Cls Acc5: 30.297,                loss 7.030
+Max acc1_cls: 17.16%
+Epoch: [2]  [0/3]  eta: 0:00:36  lr: 0.001000  loss_total: 3.1542 (3.1542)  loss_cls: 3.1542 (3.1542)  acc1_cls: 27.8646 (27.8646)  acc5_cls: 47.5260 (47.5260)  time: 12.2087  data: 11.7836  max mem: 15922
+Epoch: [2]  [2/3]  eta: 0:00:04  lr: 0.001000  loss_total: 2.9476 (3.0004)  loss_cls: 2.9476 (3.0004)  acc1_cls: 31.9010 (32.6823)  acc5_cls: 54.6875 (52.6476)  time: 4.3558  data: 3.9322  max mem: 15922
+Epoch: [2] Total time: 0:00:13 (4.4876 s / it)
+Averaged stats: lr: 0.001000  loss_total: 2.9476 (3.0004)  loss_cls: 2.9476 (3.0004)  acc1_cls: 31.9010 (32.6823)  acc5_cls: 54.6875 (52.6476)
+Test:  [0/1]  eta: 0:00:02  loss: 4.2303 (4.2303)  acc1_cls: 25.6356 (25.6356)  acc5_cls: 41.9492 (41.9492)  time: 2.1682  data: 2.0718  max mem: 15922
+Test: Total time: 0:00:02 (2.3914 s / it)
+* Batch-avg:             Cls Acc1: 25.636,                Cls Acc5: 41.949,                loss 4.230
+Max acc1_cls: 25.64%
+Epoch: [3]  [0/3]  eta: 0:00:37  lr: 0.000999  loss_total: 2.6021 (2.6021)  loss_cls: 2.6021 (2.6021)  acc1_cls: 44.4010 (44.4010)  acc5_cls: 65.6250 (65.6250)  time: 12.5151  data: 12.0918  max mem: 15922
+Epoch: [3]  [2/3]  eta: 0:00:04  lr: 0.000999  loss_total: 2.6021 (2.5648)  loss_cls: 2.6021 (2.5648)  acc1_cls: 44.4010 (45.9635)  acc5_cls: 65.6250 (65.0174)  time: 4.4538  data: 4.0307  max mem: 15922
+Epoch: [3] Total time: 0:00:13 (4.5090 s / it)
+Averaged stats: lr: 0.000999  loss_total: 2.6021 (2.5648)  loss_cls: 2.6021 (2.5648)  acc1_cls: 44.4010 (45.9635)  acc5_cls: 65.6250 (65.0174)
+Test:  [0/1]  eta: 0:00:02  loss: 3.2323 (3.2323)  acc1_cls: 32.2034 (32.2034)  acc5_cls: 53.8136 (53.8136)  time: 2.1989  data: 2.1026  max mem: 15922
+Test: Total time: 0:00:02 (2.4241 s / it)
+* Batch-avg:             Cls Acc1: 32.203,                Cls Acc5: 53.814,                loss 3.232
+Max acc1_cls: 32.20%
+Epoch: [4]  [0/3]  eta: 0:00:37  lr: 0.000998  loss_total: 2.2205 (2.2205)  loss_cls: 2.2205 (2.2205)  acc1_cls: 56.2500 (56.2500)  acc5_cls: 74.4792 (74.4792)  time: 12.3709  data: 11.9468  max mem: 15922
+Epoch: [4]  [2/3]  eta: 0:00:04  lr: 0.000998  loss_total: 2.2205 (2.2509)  loss_cls: 2.2205 (2.2509)  acc1_cls: 56.2500 (57.2917)  acc5_cls: 74.4792 (73.6111)  time: 4.4056  data: 3.9823  max mem: 15922
+Epoch: [4] Total time: 0:00:13 (4.4635 s / it)
+Averaged stats: lr: 0.000998  loss_total: 2.2205 (2.2509)  loss_cls: 2.2205 (2.2509)  acc1_cls: 56.2500 (57.2917)  acc5_cls: 74.4792 (73.6111)
+Test:  [0/1]  eta: 0:00:02  loss: 3.1078 (3.1078)  acc1_cls: 34.9576 (34.9576)  acc5_cls: 53.8136 (53.8136)  time: 2.2068  data: 2.1105  max mem: 15922
+Test: Total time: 0:00:02 (2.4216 s / it)
+* Batch-avg:             Cls Acc1: 34.958,                Cls Acc5: 53.814,                loss 3.108
+Max acc1_cls: 34.96%
+Epoch: [5]  [0/3]  eta: 0:00:36  lr: 0.000996  loss_total: 2.2114 (2.2114)  loss_cls: 2.2114 (2.2114)  acc1_cls: 55.9896 (55.9896)  acc5_cls: 73.6979 (73.6979)  time: 12.2496  data: 11.8247  max mem: 15922
+Epoch: [5]  [2/3]  eta: 0:00:04  lr: 0.000996  loss_total: 2.2114 (2.1819)  loss_cls: 2.2114 (2.1819)  acc1_cls: 55.9896 (56.7274)  acc5_cls: 73.6979 (75.1302)  time: 4.3653  data: 3.9416  max mem: 15922
+Epoch: [5] Total time: 0:00:13 (4.4226 s / it)
+Averaged stats: lr: 0.000996  loss_total: 2.2114 (2.1819)  loss_cls: 2.2114 (2.1819)  acc1_cls: 55.9896 (56.7274)  acc5_cls: 73.6979 (75.1302)
+Test:  [0/1]  eta: 0:00:02  loss: 3.3140 (3.3140)  acc1_cls: 27.1186 (27.1186)  acc5_cls: 51.0593 (51.0593)  time: 2.2034  data: 2.1070  max mem: 15922
+Test: Total time: 0:00:02 (2.4263 s / it)
+* Batch-avg:             Cls Acc1: 27.119,                Cls Acc5: 51.059,                loss 3.314
+Max acc1_cls: 34.96%
+Epoch: [6]  [0/3]  eta: 0:00:36  lr: 0.000994  loss_total: 2.0513 (2.0513)  loss_cls: 2.0513 (2.0513)  acc1_cls: 61.7188 (61.7188)  acc5_cls: 80.2083 (80.2083)  time: 12.0733  data: 11.6480  max mem: 15922
+Epoch: [6]  [2/3]  eta: 0:00:04  lr: 0.000994  loss_total: 1.9758 (1.9697)  loss_cls: 1.9758 (1.9697)  acc1_cls: 64.9740 (64.5833)  acc5_cls: 80.2083 (80.4688)  time: 4.3690  data: 3.9446  max mem: 15922
+Epoch: [6] Total time: 0:00:13 (4.4272 s / it)
+Averaged stats: lr: 0.000994  loss_total: 1.9758 (1.9697)  loss_cls: 1.9758 (1.9697)  acc1_cls: 64.9740 (64.5833)  acc5_cls: 80.2083 (80.4688)
+Test:  [0/1]  eta: 0:00:02  loss: 3.1101 (3.1101)  acc1_cls: 30.7203 (30.7203)  acc5_cls: 55.7203 (55.7203)  time: 2.2053  data: 2.1087  max mem: 15922
+Test: Total time: 0:00:02 (2.4403 s / it)
+* Batch-avg:             Cls Acc1: 30.720,                Cls Acc5: 55.720,                loss 3.110
+Max acc1_cls: 34.96%
+Epoch: [7]  [0/3]  eta: 0:00:37  lr: 0.000991  loss_total: 1.8864 (1.8864)  loss_cls: 1.8864 (1.8864)  acc1_cls: 66.7969 (66.7969)  acc5_cls: 82.6823 (82.6823)  time: 12.4108  data: 11.9875  max mem: 15922
+Epoch: [7]  [2/3]  eta: 0:00:04  lr: 0.000991  loss_total: 1.7109 (1.7693)  loss_cls: 1.7109 (1.7693)  acc1_cls: 70.0521 (69.3576)  acc5_cls: 84.6354 (84.5052)  time: 4.4190  data: 3.9959  max mem: 15922
+Epoch: [7] Total time: 0:00:13 (4.4742 s / it)
+Averaged stats: lr: 0.000991  loss_total: 1.7109 (1.7693)  loss_cls: 1.7109 (1.7693)  acc1_cls: 70.0521 (69.3576)  acc5_cls: 84.6354 (84.5052)
+Test:  [0/1]  eta: 0:00:02  loss: 2.7732 (2.7732)  acc1_cls: 34.1102 (34.1102)  acc5_cls: 62.5000 (62.5000)  time: 2.1450  data: 2.0485  max mem: 15922
+Test: Total time: 0:00:02 (2.3164 s / it)
+* Batch-avg:             Cls Acc1: 34.110,                Cls Acc5: 62.500,                loss 2.773
+Max acc1_cls: 34.96%
+Epoch: [8]  [0/3]  eta: 0:00:37  lr: 0.000988  loss_total: 1.7058 (1.7058)  loss_cls: 1.7058 (1.7058)  acc1_cls: 70.1823 (70.1823)  acc5_cls: 85.0260 (85.0260)  time: 12.5171  data: 12.0933  max mem: 15922
+Epoch: [8]  [2/3]  eta: 0:00:04  lr: 0.000988  loss_total: 1.6394 (1.6563)  loss_cls: 1.6394 (1.6563)  acc1_cls: 71.2240 (72.2222)  acc5_cls: 85.0260 (85.3733)  time: 4.4546  data: 4.0312  max mem: 15922
+Epoch: [8] Total time: 0:00:13 (4.5114 s / it)
+Averaged stats: lr: 0.000988  loss_total: 1.6394 (1.6563)  loss_cls: 1.6394 (1.6563)  acc1_cls: 71.2240 (72.2222)  acc5_cls: 85.0260 (85.3733)
+Test:  [0/1]  eta: 0:00:02  loss: 2.2081 (2.2081)  acc1_cls: 48.5169 (48.5169)  acc5_cls: 70.3390 (70.3390)  time: 2.2198  data: 2.1236  max mem: 15922
+Test: Total time: 0:00:02 (2.4393 s / it)
+* Batch-avg:             Cls Acc1: 48.517,                Cls Acc5: 70.339,                loss 2.208
+Max acc1_cls: 48.52%
+Epoch: [9]  [0/3]  eta: 0:00:35  lr: 0.000984  loss_total: 1.5357 (1.5357)  loss_cls: 1.5357 (1.5357)  acc1_cls: 76.0417 (76.0417)  acc5_cls: 88.6719 (88.6719)  time: 11.8427  data: 11.4166  max mem: 15924
+Epoch: [9]  [2/3]  eta: 0:00:04  lr: 0.000984  loss_total: 1.4469 (1.4652)  loss_cls: 1.4469 (1.4652)  acc1_cls: 76.8229 (78.0382)  acc5_cls: 88.6719 (88.8889)  time: 4.2302  data: 3.8056  max mem: 15924
+Epoch: [9] Total time: 0:00:12 (4.2881 s / it)
+Averaged stats: lr: 0.000984  loss_total: 1.4469 (1.4652)  loss_cls: 1.4469 (1.4652)  acc1_cls: 76.8229 (78.0382)  acc5_cls: 88.6719 (88.8889)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9969 (1.9969)  acc1_cls: 55.7203 (55.7203)  acc5_cls: 76.2712 (76.2712)  time: 2.2424  data: 2.1461  max mem: 15924
+Test: Total time: 0:00:02 (2.4616 s / it)
+* Batch-avg:             Cls Acc1: 55.720,                Cls Acc5: 76.271,                loss 1.997
+Max acc1_cls: 55.72%
+Epoch: [10]  [0/3]  eta: 0:00:37  lr: 0.000980  loss_total: 1.3765 (1.3765)  loss_cls: 1.3765 (1.3765)  acc1_cls: 82.0312 (82.0312)  acc5_cls: 91.7969 (91.7969)  time: 12.5143  data: 12.0904  max mem: 15924
+Epoch: [10]  [2/3]  eta: 0:00:04  lr: 0.000980  loss_total: 1.3765 (1.3635)  loss_cls: 1.3765 (1.3635)  acc1_cls: 82.0312 (81.0330)  acc5_cls: 91.7969 (92.0573)  time: 4.4541  data: 4.0302  max mem: 15924
+Epoch: [10] Total time: 0:00:13 (4.5132 s / it)
+Averaged stats: lr: 0.000980  loss_total: 1.3765 (1.3635)  loss_cls: 1.3765 (1.3635)  acc1_cls: 82.0312 (81.0330)  acc5_cls: 91.7969 (92.0573)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8955 (1.8955)  acc1_cls: 59.9576 (59.9576)  acc5_cls: 78.8136 (78.8136)  time: 2.2337  data: 2.1375  max mem: 15924
+Test: Total time: 0:00:02 (2.4550 s / it)
+* Batch-avg:             Cls Acc1: 59.958,                Cls Acc5: 78.814,                loss 1.895
+Max acc1_cls: 59.96%
+Epoch: [11]  [0/3]  eta: 0:00:34  lr: 0.000976  loss_total: 1.2113 (1.2113)  loss_cls: 1.2113 (1.2113)  acc1_cls: 86.4583 (86.4583)  acc5_cls: 93.7500 (93.7500)  time: 11.5531  data: 11.1274  max mem: 15924
+Epoch: [11]  [2/3]  eta: 0:00:04  lr: 0.000976  loss_total: 1.2029 (1.1981)  loss_cls: 1.2029 (1.1981)  acc1_cls: 85.8073 (85.7205)  acc5_cls: 93.4896 (93.0556)  time: 4.2950  data: 3.8719  max mem: 15924
+Epoch: [11] Total time: 0:00:13 (4.3505 s / it)
+Averaged stats: lr: 0.000976  loss_total: 1.2029 (1.1981)  loss_cls: 1.2029 (1.1981)  acc1_cls: 85.8073 (85.7205)  acc5_cls: 93.4896 (93.0556)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8727 (1.8727)  acc1_cls: 61.8644 (61.8644)  acc5_cls: 78.8136 (78.8136)  time: 2.2002  data: 2.1040  max mem: 15924
+Test: Total time: 0:00:02 (2.4142 s / it)
+* Batch-avg:             Cls Acc1: 61.864,                Cls Acc5: 78.814,                loss 1.873
+Max acc1_cls: 61.86%
+Epoch: [12]  [0/3]  eta: 0:00:36  lr: 0.000971  loss_total: 1.0851 (1.0851)  loss_cls: 1.0851 (1.0851)  acc1_cls: 88.5417 (88.5417)  acc5_cls: 93.6198 (93.6198)  time: 12.1530  data: 11.7273  max mem: 15925
+Epoch: [12]  [2/3]  eta: 0:00:04  lr: 0.000971  loss_total: 1.0851 (1.0804)  loss_cls: 1.0851 (1.0804)  acc1_cls: 87.6302 (87.8906)  acc5_cls: 94.1406 (94.1406)  time: 4.3437  data: 3.9208  max mem: 15925
+Epoch: [12] Total time: 0:00:13 (4.4026 s / it)
+Averaged stats: lr: 0.000971  loss_total: 1.0851 (1.0804)  loss_cls: 1.0851 (1.0804)  acc1_cls: 87.6302 (87.8906)  acc5_cls: 94.1406 (94.1406)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8783 (1.8783)  acc1_cls: 62.5000 (62.5000)  acc5_cls: 79.8729 (79.8729)  time: 2.2227  data: 2.1264  max mem: 15925
+Test: Total time: 0:00:02 (2.4420 s / it)
+* Batch-avg:             Cls Acc1: 62.500,                Cls Acc5: 79.873,                loss 1.878
+Max acc1_cls: 62.50%
+Epoch: [13]  [0/3]  eta: 0:00:37  lr: 0.000965  loss_total: 1.0323 (1.0323)  loss_cls: 1.0323 (1.0323)  acc1_cls: 87.8906 (87.8906)  acc5_cls: 94.5312 (94.5312)  time: 12.6332  data: 12.2088  max mem: 15925
+Epoch: [13]  [2/3]  eta: 0:00:04  lr: 0.000965  loss_total: 1.0323 (1.0266)  loss_cls: 1.0323 (1.0266)  acc1_cls: 87.8906 (88.4115)  acc5_cls: 94.6615 (94.9219)  time: 4.4923  data: 4.0697  max mem: 15925
+Epoch: [13] Total time: 0:00:13 (4.6234 s / it)
+Averaged stats: lr: 0.000965  loss_total: 1.0323 (1.0266)  loss_cls: 1.0323 (1.0266)  acc1_cls: 87.8906 (88.4115)  acc5_cls: 94.6615 (94.9219)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9128 (1.9128)  acc1_cls: 62.5000 (62.5000)  acc5_cls: 79.4492 (79.4492)  time: 2.2173  data: 2.1210  max mem: 15925
+Test: Total time: 0:00:02 (2.4441 s / it)
+* Batch-avg:             Cls Acc1: 62.500,                Cls Acc5: 79.449,                loss 1.913
+Max acc1_cls: 62.50%
+Epoch: [14]  [0/3]  eta: 0:00:36  lr: 0.000959  loss_total: 0.9138 (0.9138)  loss_cls: 0.9138 (0.9138)  acc1_cls: 92.0573 (92.0573)  acc5_cls: 96.8750 (96.8750)  time: 12.1835  data: 11.7578  max mem: 15925
+Epoch: [14]  [2/3]  eta: 0:00:04  lr: 0.000959  loss_total: 0.9683 (0.9510)  loss_cls: 0.9683 (0.9510)  acc1_cls: 89.1927 (89.9306)  acc5_cls: 94.9219 (95.5295)  time: 4.3935  data: 3.9704  max mem: 15925
+Epoch: [14] Total time: 0:00:13 (4.5242 s / it)
+Averaged stats: lr: 0.000959  loss_total: 0.9683 (0.9510)  loss_cls: 0.9683 (0.9510)  acc1_cls: 89.1927 (89.9306)  acc5_cls: 94.9219 (95.5295)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9189 (1.9189)  acc1_cls: 64.6186 (64.6186)  acc5_cls: 81.1441 (81.1441)  time: 2.2385  data: 2.1419  max mem: 15925
+Test: Total time: 0:00:02 (2.4604 s / it)
+* Batch-avg:             Cls Acc1: 64.619,                Cls Acc5: 81.144,                loss 1.919
+Max acc1_cls: 64.62%
+Epoch: [15]  [0/3]  eta: 0:00:37  lr: 0.000953  loss_total: 0.8676 (0.8676)  loss_cls: 0.8676 (0.8676)  acc1_cls: 91.4062 (91.4062)  acc5_cls: 97.3958 (97.3958)  time: 12.4822  data: 12.0581  max mem: 15925
+Epoch: [15]  [2/3]  eta: 0:00:04  lr: 0.000953  loss_total: 0.8314 (0.8385)  loss_cls: 0.8314 (0.8385)  acc1_cls: 91.4062 (91.5365)  acc5_cls: 97.3958 (97.5260)  time: 4.4420  data: 4.0194  max mem: 15925
+Epoch: [15] Total time: 0:00:13 (4.5018 s / it)
+Averaged stats: lr: 0.000953  loss_total: 0.8314 (0.8385)  loss_cls: 0.8314 (0.8385)  acc1_cls: 91.4062 (91.5365)  acc5_cls: 97.3958 (97.5260)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9317 (1.9317)  acc1_cls: 65.0424 (65.0424)  acc5_cls: 81.7797 (81.7797)  time: 2.1776  data: 2.0809  max mem: 15925
+Test: Total time: 0:00:02 (2.3421 s / it)
+* Batch-avg:             Cls Acc1: 65.042,                Cls Acc5: 81.780,                loss 1.932
+Max acc1_cls: 65.04%
+Epoch: [16]  [0/3]  eta: 0:00:37  lr: 0.000946  loss_total: 0.8481 (0.8481)  loss_cls: 0.8481 (0.8481)  acc1_cls: 91.0156 (91.0156)  acc5_cls: 97.5260 (97.5260)  time: 12.5845  data: 12.1606  max mem: 15925
+Epoch: [16]  [2/3]  eta: 0:00:04  lr: 0.000946  loss_total: 0.7780 (0.8000)  loss_cls: 0.7780 (0.8000)  acc1_cls: 92.8385 (92.3177)  acc5_cls: 97.1354 (97.1354)  time: 4.4764  data: 4.0536  max mem: 15925
+Epoch: [16] Total time: 0:00:13 (4.5917 s / it)
+Averaged stats: lr: 0.000946  loss_total: 0.7780 (0.8000)  loss_cls: 0.7780 (0.8000)  acc1_cls: 92.8385 (92.3177)  acc5_cls: 97.1354 (97.1354)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8935 (1.8935)  acc1_cls: 66.7373 (66.7373)  acc5_cls: 83.6864 (83.6864)  time: 2.1902  data: 2.0940  max mem: 15925
+Test: Total time: 0:00:02 (2.3557 s / it)
+* Batch-avg:             Cls Acc1: 66.737,                Cls Acc5: 83.686,                loss 1.894
+Max acc1_cls: 66.74%
+Epoch: [17]  [0/3]  eta: 0:00:36  lr: 0.000939  loss_total: 0.7271 (0.7271)  loss_cls: 0.7271 (0.7271)  acc1_cls: 93.0990 (93.0990)  acc5_cls: 98.3073 (98.3073)  time: 12.2602  data: 11.8349  max mem: 15925
+Epoch: [17]  [2/3]  eta: 0:00:04  lr: 0.000939  loss_total: 0.7044 (0.6908)  loss_cls: 0.7044 (0.6908)  acc1_cls: 93.2292 (93.9236)  acc5_cls: 98.1771 (98.1771)  time: 4.4228  data: 3.9993  max mem: 15925
+Epoch: [17] Total time: 0:00:13 (4.4804 s / it)
+Averaged stats: lr: 0.000939  loss_total: 0.7044 (0.6908)  loss_cls: 0.7044 (0.6908)  acc1_cls: 93.2292 (93.9236)  acc5_cls: 98.1771 (98.1771)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8529 (1.8529)  acc1_cls: 68.2203 (68.2203)  acc5_cls: 81.7797 (81.7797)  time: 2.1905  data: 2.0941  max mem: 15925
+Test: Total time: 0:00:02 (2.4143 s / it)
+* Batch-avg:             Cls Acc1: 68.220,                Cls Acc5: 81.780,                loss 1.853
+Max acc1_cls: 68.22%
+Epoch: [18]  [0/3]  eta: 0:00:38  lr: 0.000931  loss_total: 0.6500 (0.6500)  loss_cls: 0.6500 (0.6500)  acc1_cls: 95.3125 (95.3125)  acc5_cls: 97.6562 (97.6562)  time: 12.7294  data: 12.3055  max mem: 15925
+Epoch: [18]  [2/3]  eta: 0:00:04  lr: 0.000931  loss_total: 0.6134 (0.6091)  loss_cls: 0.6134 (0.6091)  acc1_cls: 95.9635 (95.7465)  acc5_cls: 98.1771 (98.3507)  time: 4.5245  data: 4.1019  max mem: 15925
+Epoch: [18] Total time: 0:00:13 (4.6601 s / it)
+Averaged stats: lr: 0.000931  loss_total: 0.6134 (0.6091)  loss_cls: 0.6134 (0.6091)  acc1_cls: 95.9635 (95.7465)  acc5_cls: 98.1771 (98.3507)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8563 (1.8563)  acc1_cls: 68.8559 (68.8559)  acc5_cls: 80.7203 (80.7203)  time: 2.2033  data: 2.1069  max mem: 15925
+Test: Total time: 0:00:02 (2.3626 s / it)
+* Batch-avg:             Cls Acc1: 68.856,                Cls Acc5: 80.720,                loss 1.856
+Max acc1_cls: 68.86%
+Epoch: [19]  [0/3]  eta: 0:00:37  lr: 0.000923  loss_total: 0.6650 (0.6650)  loss_cls: 0.6650 (0.6650)  acc1_cls: 94.4010 (94.4010)  acc5_cls: 97.9167 (97.9167)  time: 12.5278  data: 12.1040  max mem: 15925
+Epoch: [19]  [2/3]  eta: 0:00:04  lr: 0.000923  loss_total: 0.5967 (0.6104)  loss_cls: 0.5967 (0.6104)  acc1_cls: 94.5312 (94.8785)  acc5_cls: 98.0469 (98.2639)  time: 4.4571  data: 4.0347  max mem: 15925
+Epoch: [19] Total time: 0:00:13 (4.5150 s / it)
+Averaged stats: lr: 0.000923  loss_total: 0.5967 (0.6104)  loss_cls: 0.5967 (0.6104)  acc1_cls: 94.5312 (94.8785)  acc5_cls: 98.0469 (98.2639)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8688 (1.8688)  acc1_cls: 68.6441 (68.6441)  acc5_cls: 82.4153 (82.4153)  time: 2.1240  data: 2.0277  max mem: 15925
+Test: Total time: 0:00:02 (2.2894 s / it)
+* Batch-avg:             Cls Acc1: 68.644,                Cls Acc5: 82.415,                loss 1.869
+Max acc1_cls: 68.86%
+Epoch: [20]  [0/3]  eta: 0:00:38  lr: 0.000914  loss_total: 0.5096 (0.5096)  loss_cls: 0.5096 (0.5096)  acc1_cls: 96.0938 (96.0938)  acc5_cls: 99.0885 (99.0885)  time: 12.7016  data: 12.2779  max mem: 15925
+Epoch: [20]  [2/3]  eta: 0:00:04  lr: 0.000914  loss_total: 0.5096 (0.5168)  loss_cls: 0.5096 (0.5168)  acc1_cls: 96.0938 (96.5712)  acc5_cls: 99.0885 (98.9149)  time: 4.5150  data: 4.0927  max mem: 15925
+Epoch: [20] Total time: 0:00:13 (4.5719 s / it)
+Averaged stats: lr: 0.000914  loss_total: 0.5096 (0.5168)  loss_cls: 0.5096 (0.5168)  acc1_cls: 96.0938 (96.5712)  acc5_cls: 99.0885 (98.9149)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9291 (1.9291)  acc1_cls: 68.4322 (68.4322)  acc5_cls: 81.5678 (81.5678)  time: 2.2352  data: 2.1389  max mem: 15925
+Test: Total time: 0:00:02 (2.4532 s / it)
+* Batch-avg:             Cls Acc1: 68.432,                Cls Acc5: 81.568,                loss 1.929
+Max acc1_cls: 68.86%
+Epoch: [21]  [0/3]  eta: 0:00:36  lr: 0.000905  loss_total: 0.5354 (0.5354)  loss_cls: 0.5354 (0.5354)  acc1_cls: 96.0938 (96.0938)  acc5_cls: 98.1771 (98.1771)  time: 12.2148  data: 11.7901  max mem: 15925
+Epoch: [21]  [2/3]  eta: 0:00:04  lr: 0.000905  loss_total: 0.5354 (0.5228)  loss_cls: 0.5354 (0.5228)  acc1_cls: 96.0938 (95.8767)  acc5_cls: 98.0469 (98.0469)  time: 4.3526  data: 3.9301  max mem: 15925
+Epoch: [21] Total time: 0:00:13 (4.4119 s / it)
+Averaged stats: lr: 0.000905  loss_total: 0.5354 (0.5228)  loss_cls: 0.5354 (0.5228)  acc1_cls: 96.0938 (95.8767)  acc5_cls: 98.0469 (98.0469)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8963 (1.8963)  acc1_cls: 69.9153 (69.9153)  acc5_cls: 83.4746 (83.4746)  time: 2.2317  data: 2.1356  max mem: 15925
+Test: Total time: 0:00:02 (2.4526 s / it)
+* Batch-avg:             Cls Acc1: 69.915,                Cls Acc5: 83.475,                loss 1.896
+Max acc1_cls: 69.92%
+Epoch: [22]  [0/3]  eta: 0:00:35  lr: 0.000896  loss_total: 0.4516 (0.4516)  loss_cls: 0.4516 (0.4516)  acc1_cls: 97.2656 (97.2656)  acc5_cls: 98.9583 (98.9583)  time: 11.7292  data: 11.3020  max mem: 15925
+Epoch: [22]  [2/3]  eta: 0:00:04  lr: 0.000896  loss_total: 0.4516 (0.4646)  loss_cls: 0.4516 (0.4646)  acc1_cls: 97.2656 (97.2222)  acc5_cls: 98.9583 (99.1319)  time: 4.3052  data: 3.8815  max mem: 15925
+Epoch: [22] Total time: 0:00:13 (4.3644 s / it)
+Averaged stats: lr: 0.000896  loss_total: 0.4516 (0.4646)  loss_cls: 0.4516 (0.4646)  acc1_cls: 97.2656 (97.2222)  acc5_cls: 98.9583 (99.1319)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8598 (1.8598)  acc1_cls: 71.6102 (71.6102)  acc5_cls: 83.8983 (83.8983)  time: 2.1650  data: 2.0688  max mem: 15925
+Test: Total time: 0:00:02 (2.3304 s / it)
+* Batch-avg:             Cls Acc1: 71.610,                Cls Acc5: 83.898,                loss 1.860
+Max acc1_cls: 71.61%
+Epoch: [23]  [0/3]  eta: 0:00:34  lr: 0.000886  loss_total: 0.4140 (0.4140)  loss_cls: 0.4140 (0.4140)  acc1_cls: 97.2656 (97.2656)  acc5_cls: 99.6094 (99.6094)  time: 11.6197  data: 11.1953  max mem: 15925
+Epoch: [23]  [2/3]  eta: 0:00:04  lr: 0.000886  loss_total: 0.4207 (0.4291)  loss_cls: 0.4207 (0.4291)  acc1_cls: 97.1354 (96.9618)  acc5_cls: 99.2188 (99.1753)  time: 4.3726  data: 3.9500  max mem: 15925
+Epoch: [23] Total time: 0:00:13 (4.5069 s / it)
+Averaged stats: lr: 0.000886  loss_total: 0.4207 (0.4291)  loss_cls: 0.4207 (0.4291)  acc1_cls: 97.1354 (96.9618)  acc5_cls: 99.2188 (99.1753)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8791 (1.8791)  acc1_cls: 70.7627 (70.7627)  acc5_cls: 80.9322 (80.9322)  time: 2.2204  data: 2.1244  max mem: 15925
+Test: Total time: 0:00:02 (2.4470 s / it)
+* Batch-avg:             Cls Acc1: 70.763,                Cls Acc5: 80.932,                loss 1.879
+Max acc1_cls: 71.61%
+Epoch: [24]  [0/3]  eta: 0:00:37  lr: 0.000876  loss_total: 0.4155 (0.4155)  loss_cls: 0.4155 (0.4155)  acc1_cls: 97.7865 (97.7865)  acc5_cls: 99.6094 (99.6094)  time: 12.3412  data: 11.9172  max mem: 15925
+Epoch: [24]  [2/3]  eta: 0:00:04  lr: 0.000876  loss_total: 0.3655 (0.3812)  loss_cls: 0.3655 (0.3812)  acc1_cls: 97.9167 (97.9601)  acc5_cls: 99.4792 (99.5226)  time: 4.3953  data: 3.9725  max mem: 15925
+Epoch: [24] Total time: 0:00:13 (4.4528 s / it)
+Averaged stats: lr: 0.000876  loss_total: 0.3655 (0.3812)  loss_cls: 0.3655 (0.3812)  acc1_cls: 97.9167 (97.9601)  acc5_cls: 99.4792 (99.5226)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9021 (1.9021)  acc1_cls: 70.7627 (70.7627)  acc5_cls: 81.7797 (81.7797)  time: 2.2285  data: 2.1322  max mem: 15925
+Test: Total time: 0:00:02 (2.4465 s / it)
+* Batch-avg:             Cls Acc1: 70.763,                Cls Acc5: 81.780,                loss 1.902
+Max acc1_cls: 71.61%
+Epoch: [25]  [0/3]  eta: 0:00:35  lr: 0.000866  loss_total: 0.3469 (0.3469)  loss_cls: 0.3469 (0.3469)  acc1_cls: 99.0885 (99.0885)  acc5_cls: 99.6094 (99.6094)  time: 11.8840  data: 11.4573  max mem: 15925
+Epoch: [25]  [2/3]  eta: 0:00:04  lr: 0.000866  loss_total: 0.3720 (0.3652)  loss_cls: 0.3720 (0.3652)  acc1_cls: 98.1771 (98.2639)  acc5_cls: 99.6094 (99.4358)  time: 4.2427  data: 3.8192  max mem: 15925
+Epoch: [25] Total time: 0:00:12 (4.3016 s / it)
+Averaged stats: lr: 0.000866  loss_total: 0.3720 (0.3652)  loss_cls: 0.3720 (0.3652)  acc1_cls: 98.1771 (98.2639)  acc5_cls: 99.6094 (99.4358)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8832 (1.8832)  acc1_cls: 70.7627 (70.7627)  acc5_cls: 82.2034 (82.2034)  time: 2.1450  data: 2.0489  max mem: 15925
+Test: Total time: 0:00:02 (2.3094 s / it)
+* Batch-avg:             Cls Acc1: 70.763,                Cls Acc5: 82.203,                loss 1.883
+Max acc1_cls: 71.61%
+Epoch: [26]  [0/3]  eta: 0:00:35  lr: 0.000855  loss_total: 0.3475 (0.3475)  loss_cls: 0.3475 (0.3475)  acc1_cls: 98.3073 (98.3073)  acc5_cls: 99.2188 (99.2188)  time: 11.9282  data: 11.5018  max mem: 15925
+Epoch: [26]  [2/3]  eta: 0:00:04  lr: 0.000855  loss_total: 0.3239 (0.3229)  loss_cls: 0.3239 (0.3229)  acc1_cls: 98.4375 (98.5677)  acc5_cls: 99.8698 (99.6528)  time: 4.2575  data: 3.8340  max mem: 15925
+Epoch: [26] Total time: 0:00:12 (4.3160 s / it)
+Averaged stats: lr: 0.000855  loss_total: 0.3239 (0.3229)  loss_cls: 0.3239 (0.3229)  acc1_cls: 98.4375 (98.5677)  acc5_cls: 99.8698 (99.6528)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8807 (1.8807)  acc1_cls: 71.1864 (71.1864)  acc5_cls: 83.2627 (83.2627)  time: 2.2305  data: 2.1344  max mem: 15925
+Test: Total time: 0:00:02 (2.4490 s / it)
+* Batch-avg:             Cls Acc1: 71.186,                Cls Acc5: 83.263,                loss 1.881
+Max acc1_cls: 71.61%
+Epoch: [27]  [0/3]  eta: 0:00:36  lr: 0.000844  loss_total: 0.3158 (0.3158)  loss_cls: 0.3158 (0.3158)  acc1_cls: 98.1771 (98.1771)  acc5_cls: 99.6094 (99.6094)  time: 12.1654  data: 11.7405  max mem: 15925
+Epoch: [27]  [2/3]  eta: 0:00:04  lr: 0.000844  loss_total: 0.3041 (0.2984)  loss_cls: 0.3041 (0.2984)  acc1_cls: 98.5677 (98.4809)  acc5_cls: 99.6094 (99.5660)  time: 4.3367  data: 3.9136  max mem: 15925
+Epoch: [27] Total time: 0:00:13 (4.3938 s / it)
+Averaged stats: lr: 0.000844  loss_total: 0.3041 (0.2984)  loss_cls: 0.3041 (0.2984)  acc1_cls: 98.5677 (98.4809)  acc5_cls: 99.6094 (99.5660)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8872 (1.8872)  acc1_cls: 71.6102 (71.6102)  acc5_cls: 81.7797 (81.7797)  time: 2.0799  data: 1.9833  max mem: 15925
+Test: Total time: 0:00:02 (2.2418 s / it)
+* Batch-avg:             Cls Acc1: 71.610,                Cls Acc5: 81.780,                loss 1.887
+Max acc1_cls: 71.61%
+Epoch: [28]  [0/3]  eta: 0:00:36  lr: 0.000832  loss_total: 0.3194 (0.3194)  loss_cls: 0.3194 (0.3194)  acc1_cls: 97.9167 (97.9167)  acc5_cls: 99.4792 (99.4792)  time: 12.3235  data: 11.8990  max mem: 15925
+Epoch: [28]  [2/3]  eta: 0:00:04  lr: 0.000832  loss_total: 0.2954 (0.3006)  loss_cls: 0.2954 (0.3006)  acc1_cls: 98.3073 (98.3073)  acc5_cls: 99.6094 (99.6094)  time: 4.3891  data: 3.9664  max mem: 15925
+Epoch: [28] Total time: 0:00:13 (4.4447 s / it)
+Averaged stats: lr: 0.000832  loss_total: 0.2954 (0.3006)  loss_cls: 0.2954 (0.3006)  acc1_cls: 98.3073 (98.3073)  acc5_cls: 99.6094 (99.6094)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9064 (1.9064)  acc1_cls: 70.7627 (70.7627)  acc5_cls: 82.4153 (82.4153)  time: 2.1477  data: 2.0515  max mem: 15925
+Test: Total time: 0:00:02 (2.3080 s / it)
+* Batch-avg:             Cls Acc1: 70.763,                Cls Acc5: 82.415,                loss 1.906
+Max acc1_cls: 71.61%
+Epoch: [29]  [0/3]  eta: 0:00:36  lr: 0.000821  loss_total: 0.2611 (0.2611)  loss_cls: 0.2611 (0.2611)  acc1_cls: 98.9583 (98.9583)  acc5_cls: 99.8698 (99.8698)  time: 12.1060  data: 11.6818  max mem: 15925
+Epoch: [29]  [2/3]  eta: 0:00:04  lr: 0.000821  loss_total: 0.2777 (0.2763)  loss_cls: 0.2777 (0.2763)  acc1_cls: 98.8281 (98.7847)  acc5_cls: 99.7396 (99.6962)  time: 4.3161  data: 3.8940  max mem: 15925
+Epoch: [29] Total time: 0:00:13 (4.3723 s / it)
+Averaged stats: lr: 0.000821  loss_total: 0.2777 (0.2763)  loss_cls: 0.2777 (0.2763)  acc1_cls: 98.8281 (98.7847)  acc5_cls: 99.7396 (99.6962)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8461 (1.8461)  acc1_cls: 71.3983 (71.3983)  acc5_cls: 83.6864 (83.6864)  time: 2.1726  data: 2.0759  max mem: 15925
+Test: Total time: 0:00:02 (2.3466 s / it)
+* Batch-avg:             Cls Acc1: 71.398,                Cls Acc5: 83.686,                loss 1.846
+Max acc1_cls: 71.61%
+Epoch: [30]  [0/3]  eta: 0:00:37  lr: 0.000808  loss_total: 0.2592 (0.2592)  loss_cls: 0.2592 (0.2592)  acc1_cls: 98.8281 (98.8281)  acc5_cls: 99.8698 (99.8698)  time: 12.4037  data: 11.9795  max mem: 15925
+Epoch: [30]  [2/3]  eta: 0:00:04  lr: 0.000808  loss_total: 0.2639 (0.2701)  loss_cls: 0.2639 (0.2701)  acc1_cls: 98.6979 (98.6111)  acc5_cls: 99.7396 (99.6962)  time: 4.4157  data: 3.9932  max mem: 15925
+Epoch: [30] Total time: 0:00:13 (4.4749 s / it)
+Averaged stats: lr: 0.000808  loss_total: 0.2639 (0.2701)  loss_cls: 0.2639 (0.2701)  acc1_cls: 98.6979 (98.6111)  acc5_cls: 99.7396 (99.6962)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8182 (1.8182)  acc1_cls: 70.3390 (70.3390)  acc5_cls: 82.2034 (82.2034)  time: 2.2057  data: 2.1092  max mem: 15925
+Test: Total time: 0:00:02 (2.4264 s / it)
+* Batch-avg:             Cls Acc1: 70.339,                Cls Acc5: 82.203,                loss 1.818
+Max acc1_cls: 71.61%
+Epoch: [31]  [0/3]  eta: 0:00:36  lr: 0.000796  loss_total: 0.2417 (0.2417)  loss_cls: 0.2417 (0.2417)  acc1_cls: 99.3490 (99.3490)  acc5_cls: 99.6094 (99.6094)  time: 12.1948  data: 11.7708  max mem: 15925
+Epoch: [31]  [2/3]  eta: 0:00:04  lr: 0.000796  loss_total: 0.2417 (0.2438)  loss_cls: 0.2417 (0.2438)  acc1_cls: 99.2188 (99.0885)  acc5_cls: 99.6094 (99.6528)  time: 4.3462  data: 3.9237  max mem: 15925
+Epoch: [31] Total time: 0:00:13 (4.4046 s / it)
+Averaged stats: lr: 0.000796  loss_total: 0.2417 (0.2438)  loss_cls: 0.2417 (0.2438)  acc1_cls: 99.2188 (99.0885)  acc5_cls: 99.6094 (99.6528)
+Test:  [0/1]  eta: 0:00:02  loss: 1.9090 (1.9090)  acc1_cls: 70.3390 (70.3390)  acc5_cls: 82.2034 (82.2034)  time: 2.1728  data: 2.0765  max mem: 15925
+Test: Total time: 0:00:02 (2.3432 s / it)
+* Batch-avg:             Cls Acc1: 70.339,                Cls Acc5: 82.203,                loss 1.909
+Max acc1_cls: 71.61%
+Epoch: [32]  [0/3]  eta: 0:00:38  lr: 0.000783  loss_total: 0.2318 (0.2318)  loss_cls: 0.2318 (0.2318)  acc1_cls: 98.8281 (98.8281)  acc5_cls: 99.7396 (99.7396)  time: 12.7982  data: 12.3734  max mem: 15925
+Epoch: [32]  [2/3]  eta: 0:00:04  lr: 0.000783  loss_total: 0.2309 (0.2285)  loss_cls: 0.2309 (0.2285)  acc1_cls: 98.8281 (99.0017)  acc5_cls: 99.7396 (99.8264)  time: 4.5469  data: 4.1245  max mem: 15925
+Epoch: [32] Total time: 0:00:13 (4.6046 s / it)
+Averaged stats: lr: 0.000783  loss_total: 0.2309 (0.2285)  loss_cls: 0.2309 (0.2285)  acc1_cls: 98.8281 (99.0017)  acc5_cls: 99.7396 (99.8264)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8883 (1.8883)  acc1_cls: 70.7627 (70.7627)  acc5_cls: 82.4153 (82.4153)  time: 2.2365  data: 2.1402  max mem: 15925
+Test: Total time: 0:00:02 (2.4619 s / it)
+* Batch-avg:             Cls Acc1: 70.763,                Cls Acc5: 82.415,                loss 1.888
+Max acc1_cls: 71.61%
+Epoch: [33]  [0/3]  eta: 0:00:35  lr: 0.000770  loss_total: 0.2167 (0.2167)  loss_cls: 0.2167 (0.2167)  acc1_cls: 98.8281 (98.8281)  acc5_cls: 99.7396 (99.7396)  time: 11.6804  data: 11.2545  max mem: 15925
+Epoch: [33]  [2/3]  eta: 0:00:04  lr: 0.000770  loss_total: 0.2167 (0.2172)  loss_cls: 0.2167 (0.2172)  acc1_cls: 98.8281 (98.9583)  acc5_cls: 99.7396 (99.7830)  time: 4.2424  data: 3.8192  max mem: 15925
+Epoch: [33] Total time: 0:00:12 (4.3017 s / it)
+Averaged stats: lr: 0.000770  loss_total: 0.2167 (0.2172)  loss_cls: 0.2167 (0.2172)  acc1_cls: 98.8281 (98.9583)  acc5_cls: 99.7396 (99.7830)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8127 (1.8127)  acc1_cls: 70.1271 (70.1271)  acc5_cls: 83.6864 (83.6864)  time: 2.1715  data: 2.0749  max mem: 15925
+Test: Total time: 0:00:02 (2.3318 s / it)
+* Batch-avg:             Cls Acc1: 70.127,                Cls Acc5: 83.686,                loss 1.813
+Max acc1_cls: 71.61%
+Epoch: [34]  [0/3]  eta: 0:00:37  lr: 0.000757  loss_total: 0.2242 (0.2242)  loss_cls: 0.2242 (0.2242)  acc1_cls: 98.6979 (98.6979)  acc5_cls: 99.7396 (99.7396)  time: 12.4983  data: 12.0738  max mem: 15925
+Epoch: [34]  [2/3]  eta: 0:00:04  lr: 0.000757  loss_total: 0.2242 (0.2234)  loss_cls: 0.2242 (0.2234)  acc1_cls: 99.0885 (99.0017)  acc5_cls: 99.8698 (99.8698)  time: 4.4472  data: 4.0247  max mem: 15925
+Epoch: [34] Total time: 0:00:13 (4.5055 s / it)
+Averaged stats: lr: 0.000757  loss_total: 0.2242 (0.2234)  loss_cls: 0.2242 (0.2234)  acc1_cls: 99.0885 (99.0017)  acc5_cls: 99.8698 (99.8698)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8048 (1.8048)  acc1_cls: 71.3983 (71.3983)  acc5_cls: 82.4153 (82.4153)  time: 2.2150  data: 2.1188  max mem: 15925
+Test: Total time: 0:00:02 (2.4323 s / it)
+* Batch-avg:             Cls Acc1: 71.398,                Cls Acc5: 82.415,                loss 1.805
+Max acc1_cls: 71.61%
+Epoch: [35]  [0/3]  eta: 0:00:35  lr: 0.000743  loss_total: 0.2017 (0.2017)  loss_cls: 0.2017 (0.2017)  acc1_cls: 99.2188 (99.2188)  acc5_cls: 100.0000 (100.0000)  time: 11.9063  data: 11.4805  max mem: 15925
+Epoch: [35]  [2/3]  eta: 0:00:04  lr: 0.000743  loss_total: 0.1964 (0.1968)  loss_cls: 0.1964 (0.1968)  acc1_cls: 99.2188 (99.2188)  acc5_cls: 99.8698 (99.8264)  time: 4.2498  data: 3.8269  max mem: 15925
+Epoch: [35] Total time: 0:00:12 (4.3069 s / it)
+Averaged stats: lr: 0.000743  loss_total: 0.1964 (0.1968)  loss_cls: 0.1964 (0.1968)  acc1_cls: 99.2188 (99.2188)  acc5_cls: 99.8698 (99.8264)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8520 (1.8520)  acc1_cls: 72.6695 (72.6695)  acc5_cls: 82.2034 (82.2034)  time: 2.1369  data: 2.0404  max mem: 15925
+Test: Total time: 0:00:02 (2.2966 s / it)
+* Batch-avg:             Cls Acc1: 72.669,                Cls Acc5: 82.203,                loss 1.852
+Max acc1_cls: 72.67%
+Epoch: [36]  [0/3]  eta: 0:00:37  lr: 0.000730  loss_total: 0.1659 (0.1659)  loss_cls: 0.1659 (0.1659)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 99.8698 (99.8698)  time: 12.5332  data: 12.1083  max mem: 15925
+Epoch: [36]  [2/3]  eta: 0:00:04  lr: 0.000730  loss_total: 0.2049 (0.2047)  loss_cls: 0.2049 (0.2047)  acc1_cls: 99.0885 (99.2622)  acc5_cls: 99.7396 (99.7830)  time: 4.4589  data: 4.0361  max mem: 15925
+Epoch: [36] Total time: 0:00:13 (4.5211 s / it)
+Averaged stats: lr: 0.000730  loss_total: 0.2049 (0.2047)  loss_cls: 0.2049 (0.2047)  acc1_cls: 99.0885 (99.2622)  acc5_cls: 99.7396 (99.7830)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8375 (1.8375)  acc1_cls: 72.2458 (72.2458)  acc5_cls: 81.9915 (81.9915)  time: 2.2250  data: 2.1287  max mem: 15925
+Test: Total time: 0:00:02 (2.4464 s / it)
+* Batch-avg:             Cls Acc1: 72.246,                Cls Acc5: 81.992,                loss 1.838
+Max acc1_cls: 72.67%
+Epoch: [37]  [0/3]  eta: 0:00:37  lr: 0.000716  loss_total: 0.1923 (0.1923)  loss_cls: 0.1923 (0.1923)  acc1_cls: 98.9583 (98.9583)  acc5_cls: 99.8698 (99.8698)  time: 12.5495  data: 12.1255  max mem: 15925
+Epoch: [37]  [2/3]  eta: 0:00:04  lr: 0.000716  loss_total: 0.1923 (0.1910)  loss_cls: 0.1923 (0.1910)  acc1_cls: 98.9583 (99.0017)  acc5_cls: 99.8698 (99.9132)  time: 4.4645  data: 4.0419  max mem: 15925
+Epoch: [37] Total time: 0:00:13 (4.5230 s / it)
+Averaged stats: lr: 0.000716  loss_total: 0.1923 (0.1910)  loss_cls: 0.1923 (0.1910)  acc1_cls: 98.9583 (99.0017)  acc5_cls: 99.8698 (99.9132)
+Test:  [0/1]  eta: 0:00:02  loss: 1.8005 (1.8005)  acc1_cls: 71.6102 (71.6102)  acc5_cls: 81.7797 (81.7797)  time: 2.1784  data: 2.0821  max mem: 15925
+Test: Total time: 0:00:02 (2.3375 s / it)
+* Batch-avg:             Cls Acc1: 71.610,                Cls Acc5: 81.780,                loss 1.801
+Max acc1_cls: 72.67%
+Epoch: [38]  [0/3]  eta: 0:00:36  lr: 0.000702  loss_total: 0.1729 (0.1729)  loss_cls: 0.1729 (0.1729)  acc1_cls: 99.3490 (99.3490)  acc5_cls: 99.7396 (99.7396)  time: 12.1784  data: 11.7541  max mem: 15925
+Epoch: [38]  [2/3]  eta: 0:00:04  lr: 0.000702  loss_total: 0.1848 (0.1855)  loss_cls: 0.1848 (0.1855)  acc1_cls: 99.0885 (99.0885)  acc5_cls: 99.8698 (99.8698)  time: 4.3406  data: 3.9181  max mem: 15925
+Epoch: [38] Total time: 0:00:13 (4.3982 s / it)
+Averaged stats: lr: 0.000702  loss_total: 0.1848 (0.1855)  loss_cls: 0.1848 (0.1855)  acc1_cls: 99.0885 (99.0885)  acc5_cls: 99.8698 (99.8698)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7426 (1.7426)  acc1_cls: 71.6102 (71.6102)  acc5_cls: 81.5678 (81.5678)  time: 2.2186  data: 2.1223  max mem: 15925
+Test: Total time: 0:00:02 (2.4427 s / it)
+* Batch-avg:             Cls Acc1: 71.610,                Cls Acc5: 81.568,                loss 1.743
+Max acc1_cls: 72.67%
+Epoch: [39]  [0/3]  eta: 0:00:37  lr: 0.000687  loss_total: 0.1899 (0.1899)  loss_cls: 0.1899 (0.1899)  acc1_cls: 99.3490 (99.3490)  acc5_cls: 100.0000 (100.0000)  time: 12.6378  data: 12.2129  max mem: 15925
+Epoch: [39]  [2/3]  eta: 0:00:04  lr: 0.000687  loss_total: 0.1899 (0.1885)  loss_cls: 0.1899 (0.1885)  acc1_cls: 99.3490 (99.3924)  acc5_cls: 99.8698 (99.8698)  time: 4.4941  data: 4.0710  max mem: 15925
+Epoch: [39] Total time: 0:00:13 (4.5494 s / it)
+Averaged stats: lr: 0.000687  loss_total: 0.1899 (0.1885)  loss_cls: 0.1899 (0.1885)  acc1_cls: 99.3490 (99.3924)  acc5_cls: 99.8698 (99.8698)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7483 (1.7483)  acc1_cls: 71.1864 (71.1864)  acc5_cls: 82.8390 (82.8390)  time: 2.1516  data: 2.0554  max mem: 15925
+Test: Total time: 0:00:02 (2.3176 s / it)
+* Batch-avg:             Cls Acc1: 71.186,                Cls Acc5: 82.839,                loss 1.748
+Max acc1_cls: 72.67%
+Epoch: [40]  [0/3]  eta: 0:00:37  lr: 0.000673  loss_total: 0.1828 (0.1828)  loss_cls: 0.1828 (0.1828)  acc1_cls: 99.2188 (99.2188)  acc5_cls: 99.7396 (99.7396)  time: 12.6292  data: 12.2052  max mem: 15925
+Epoch: [40]  [2/3]  eta: 0:00:04  lr: 0.000673  loss_total: 0.1750 (0.1710)  loss_cls: 0.1750 (0.1710)  acc1_cls: 99.2188 (99.3490)  acc5_cls: 99.8698 (99.8698)  time: 4.4911  data: 4.0685  max mem: 15925
+Epoch: [40] Total time: 0:00:13 (4.5470 s / it)
+Averaged stats: lr: 0.000673  loss_total: 0.1750 (0.1710)  loss_cls: 0.1750 (0.1710)  acc1_cls: 99.2188 (99.3490)  acc5_cls: 99.8698 (99.8698)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7442 (1.7442)  acc1_cls: 71.1864 (71.1864)  acc5_cls: 83.2627 (83.2627)  time: 2.1234  data: 2.0271  max mem: 15925
+Test: Total time: 0:00:02 (2.2885 s / it)
+* Batch-avg:             Cls Acc1: 71.186,                Cls Acc5: 83.263,                loss 1.744
+Max acc1_cls: 72.67%
+Epoch: [41]  [0/3]  eta: 0:00:37  lr: 0.000658  loss_total: 0.1495 (0.1495)  loss_cls: 0.1495 (0.1495)  acc1_cls: 99.4792 (99.4792)  acc5_cls: 100.0000 (100.0000)  time: 12.5672  data: 12.1424  max mem: 15925
+Epoch: [41]  [2/3]  eta: 0:00:04  lr: 0.000658  loss_total: 0.1665 (0.1614)  loss_cls: 0.1665 (0.1614)  acc1_cls: 99.4792 (99.5660)  acc5_cls: 100.0000 (99.9566)  time: 4.4712  data: 4.0475  max mem: 15925
+Epoch: [41] Total time: 0:00:13 (4.5295 s / it)
+Averaged stats: lr: 0.000658  loss_total: 0.1665 (0.1614)  loss_cls: 0.1665 (0.1614)  acc1_cls: 99.4792 (99.5660)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7389 (1.7389)  acc1_cls: 71.6102 (71.6102)  acc5_cls: 83.4746 (83.4746)  time: 2.1708  data: 2.0746  max mem: 15925
+Test: Total time: 0:00:02 (2.3348 s / it)
+* Batch-avg:             Cls Acc1: 71.610,                Cls Acc5: 83.475,                loss 1.739
+Max acc1_cls: 72.67%
+Epoch: [42]  [0/3]  eta: 0:00:36  lr: 0.000643  loss_total: 0.1604 (0.1604)  loss_cls: 0.1604 (0.1604)  acc1_cls: 99.2188 (99.2188)  acc5_cls: 99.7396 (99.7396)  time: 12.0409  data: 11.6160  max mem: 15925
+Epoch: [42]  [2/3]  eta: 0:00:04  lr: 0.000643  loss_total: 0.1663 (0.1705)  loss_cls: 0.1663 (0.1705)  acc1_cls: 99.2188 (99.3924)  acc5_cls: 99.8698 (99.8264)  time: 4.2955  data: 3.8721  max mem: 15925
+Epoch: [42] Total time: 0:00:13 (4.3541 s / it)
+Averaged stats: lr: 0.000643  loss_total: 0.1663 (0.1705)  loss_cls: 0.1663 (0.1705)  acc1_cls: 99.2188 (99.3924)  acc5_cls: 99.8698 (99.8264)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7639 (1.7639)  acc1_cls: 71.3983 (71.3983)  acc5_cls: 83.0508 (83.0508)  time: 2.1809  data: 2.0847  max mem: 15925
+Test: Total time: 0:00:02 (2.3454 s / it)
+* Batch-avg:             Cls Acc1: 71.398,                Cls Acc5: 83.051,                loss 1.764
+Max acc1_cls: 72.67%
+Epoch: [43]  [0/3]  eta: 0:00:37  lr: 0.000628  loss_total: 0.1425 (0.1425)  loss_cls: 0.1425 (0.1425)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 99.8698 (99.8698)  time: 12.3724  data: 11.9481  max mem: 15925
+Epoch: [43]  [2/3]  eta: 0:00:04  lr: 0.000628  loss_total: 0.1434 (0.1521)  loss_cls: 0.1434 (0.1521)  acc1_cls: 99.3490 (99.3056)  acc5_cls: 99.8698 (99.7830)  time: 4.4052  data: 3.9828  max mem: 15925
+Epoch: [43] Total time: 0:00:13 (4.4630 s / it)
+Averaged stats: lr: 0.000628  loss_total: 0.1434 (0.1521)  loss_cls: 0.1434 (0.1521)  acc1_cls: 99.3490 (99.3056)  acc5_cls: 99.8698 (99.7830)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7669 (1.7669)  acc1_cls: 70.9746 (70.9746)  acc5_cls: 83.2627 (83.2627)  time: 2.1919  data: 2.0956  max mem: 15925
+Test: Total time: 0:00:02 (2.3537 s / it)
+* Batch-avg:             Cls Acc1: 70.975,                Cls Acc5: 83.263,                loss 1.767
+Max acc1_cls: 72.67%
+Epoch: [44]  [0/3]  eta: 0:00:36  lr: 0.000613  loss_total: 0.1428 (0.1428)  loss_cls: 0.1428 (0.1428)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 99.8698 (99.8698)  time: 12.1160  data: 11.6902  max mem: 15925
+Epoch: [44]  [2/3]  eta: 0:00:04  lr: 0.000613  loss_total: 0.1490 (0.1520)  loss_cls: 0.1490 (0.1520)  acc1_cls: 99.4792 (99.4358)  acc5_cls: 100.0000 (99.9566)  time: 4.3197  data: 3.8968  max mem: 15925
+Epoch: [44] Total time: 0:00:13 (4.3759 s / it)
+Averaged stats: lr: 0.000613  loss_total: 0.1490 (0.1520)  loss_cls: 0.1490 (0.1520)  acc1_cls: 99.4792 (99.4358)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7144 (1.7144)  acc1_cls: 72.4576 (72.4576)  acc5_cls: 83.4746 (83.4746)  time: 2.1704  data: 2.0737  max mem: 15925
+Test: Total time: 0:00:02 (2.3275 s / it)
+* Batch-avg:             Cls Acc1: 72.458,                Cls Acc5: 83.475,                loss 1.714
+Max acc1_cls: 72.67%
+Epoch: [45]  [0/3]  eta: 0:00:36  lr: 0.000598  loss_total: 0.1430 (0.1430)  loss_cls: 0.1430 (0.1430)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 99.8698 (99.8698)  time: 12.2477  data: 11.8231  max mem: 15925
+Epoch: [45]  [2/3]  eta: 0:00:04  lr: 0.000598  loss_total: 0.1415 (0.1414)  loss_cls: 0.1415 (0.1414)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (99.9566)  time: 4.3637  data: 3.9411  max mem: 15925
+Epoch: [45] Total time: 0:00:13 (4.4209 s / it)
+Averaged stats: lr: 0.000598  loss_total: 0.1415 (0.1414)  loss_cls: 0.1415 (0.1414)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7135 (1.7135)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 84.1102 (84.1102)  time: 2.1499  data: 2.0536  max mem: 15925
+Test: Total time: 0:00:02 (2.3129 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 84.110,                loss 1.713
+Max acc1_cls: 73.31%
+Epoch: [46]  [0/3]  eta: 0:00:35  lr: 0.000582  loss_total: 0.1419 (0.1419)  loss_cls: 0.1419 (0.1419)  acc1_cls: 99.2188 (99.2188)  acc5_cls: 100.0000 (100.0000)  time: 11.9303  data: 11.5041  max mem: 15925
+Epoch: [46]  [2/3]  eta: 0:00:04  lr: 0.000582  loss_total: 0.1419 (0.1402)  loss_cls: 0.1419 (0.1402)  acc1_cls: 99.4792 (99.4358)  acc5_cls: 100.0000 (99.9566)  time: 4.3711  data: 3.9477  max mem: 15925
+Epoch: [46] Total time: 0:00:13 (4.5029 s / it)
+Averaged stats: lr: 0.000582  loss_total: 0.1419 (0.1402)  loss_cls: 0.1419 (0.1402)  acc1_cls: 99.4792 (99.4358)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6868 (1.6868)  acc1_cls: 71.8220 (71.8220)  acc5_cls: 83.0508 (83.0508)  time: 2.2084  data: 2.1122  max mem: 15925
+Test: Total time: 0:00:02 (2.3767 s / it)
+* Batch-avg:             Cls Acc1: 71.822,                Cls Acc5: 83.051,                loss 1.687
+Max acc1_cls: 73.31%
+Epoch: [47]  [0/3]  eta: 0:00:37  lr: 0.000567  loss_total: 0.1693 (0.1693)  loss_cls: 0.1693 (0.1693)  acc1_cls: 98.4375 (98.4375)  acc5_cls: 99.7396 (99.7396)  time: 12.4249  data: 12.0008  max mem: 15925
+Epoch: [47]  [2/3]  eta: 0:00:04  lr: 0.000567  loss_total: 0.1580 (0.1580)  loss_cls: 0.1580 (0.1580)  acc1_cls: 99.3490 (99.1753)  acc5_cls: 99.8698 (99.8264)  time: 4.4229  data: 4.0003  max mem: 15925
+Epoch: [47] Total time: 0:00:13 (4.4780 s / it)
+Averaged stats: lr: 0.000567  loss_total: 0.1580 (0.1580)  loss_cls: 0.1580 (0.1580)  acc1_cls: 99.3490 (99.1753)  acc5_cls: 99.8698 (99.8264)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7043 (1.7043)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 83.4746 (83.4746)  time: 2.1266  data: 2.0302  max mem: 15925
+Test: Total time: 0:00:02 (2.2955 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 83.475,                loss 1.704
+Max acc1_cls: 73.31%
+Epoch: [48]  [0/3]  eta: 0:00:35  lr: 0.000552  loss_total: 0.1330 (0.1330)  loss_cls: 0.1330 (0.1330)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 11.6782  data: 11.2537  max mem: 15925
+Epoch: [48]  [2/3]  eta: 0:00:04  lr: 0.000552  loss_total: 0.1261 (0.1229)  loss_cls: 0.1261 (0.1229)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 4.2034  data: 3.7810  max mem: 15925
+Epoch: [48] Total time: 0:00:12 (4.2626 s / it)
+Averaged stats: lr: 0.000552  loss_total: 0.1261 (0.1229)  loss_cls: 0.1261 (0.1229)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7475 (1.7475)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 83.2627 (83.2627)  time: 2.1563  data: 2.0600  max mem: 15925
+Test: Total time: 0:00:02 (2.3201 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 83.263,                loss 1.748
+Max acc1_cls: 73.73%
+Epoch: [49]  [0/3]  eta: 0:00:36  lr: 0.000536  loss_total: 0.1314 (0.1314)  loss_cls: 0.1314 (0.1314)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.2805  data: 11.8553  max mem: 15925
+Epoch: [49]  [2/3]  eta: 0:00:04  lr: 0.000536  loss_total: 0.1314 (0.1293)  loss_cls: 0.1314 (0.1293)  acc1_cls: 99.4792 (99.4792)  acc5_cls: 100.0000 (99.9566)  time: 4.3742  data: 3.9518  max mem: 15925
+Epoch: [49] Total time: 0:00:13 (4.4329 s / it)
+Averaged stats: lr: 0.000536  loss_total: 0.1314 (0.1293)  loss_cls: 0.1314 (0.1293)  acc1_cls: 99.4792 (99.4792)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7574 (1.7574)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 82.6271 (82.6271)  time: 2.2231  data: 2.1267  max mem: 15925
+Test: Total time: 0:00:02 (2.4542 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 82.627,                loss 1.757
+Max acc1_cls: 73.73%
+Epoch: [50]  [0/3]  eta: 0:00:37  lr: 0.000521  loss_total: 0.1125 (0.1125)  loss_cls: 0.1125 (0.1125)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.3980  data: 11.9735  max mem: 15925
+Epoch: [50]  [2/3]  eta: 0:00:04  lr: 0.000521  loss_total: 0.1301 (0.1262)  loss_cls: 0.1301 (0.1262)  acc1_cls: 99.4792 (99.5660)  acc5_cls: 99.8698 (99.9132)  time: 4.4139  data: 3.9912  max mem: 15925
+Epoch: [50] Total time: 0:00:13 (4.4736 s / it)
+Averaged stats: lr: 0.000521  loss_total: 0.1301 (0.1262)  loss_cls: 0.1301 (0.1262)  acc1_cls: 99.4792 (99.5660)  acc5_cls: 99.8698 (99.9132)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7288 (1.7288)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 83.6864 (83.6864)  time: 2.1762  data: 2.0797  max mem: 15925
+Test: Total time: 0:00:02 (2.3371 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 83.686,                loss 1.729
+Max acc1_cls: 73.73%
+Epoch: [51]  [0/3]  eta: 0:00:37  lr: 0.000505  loss_total: 0.1200 (0.1200)  loss_cls: 0.1200 (0.1200)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 12.4324  data: 12.0082  max mem: 15925
+Epoch: [51]  [2/3]  eta: 0:00:04  lr: 0.000505  loss_total: 0.1244 (0.1284)  loss_cls: 0.1244 (0.1284)  acc1_cls: 99.6094 (99.5660)  acc5_cls: 100.0000 (99.9566)  time: 4.4251  data: 4.0028  max mem: 15925
+Epoch: [51] Total time: 0:00:13 (4.4829 s / it)
+Averaged stats: lr: 0.000505  loss_total: 0.1244 (0.1284)  loss_cls: 0.1244 (0.1284)  acc1_cls: 99.6094 (99.5660)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6521 (1.6521)  acc1_cls: 72.6695 (72.6695)  acc5_cls: 84.5339 (84.5339)  time: 2.1762  data: 2.0793  max mem: 15925
+Test: Total time: 0:00:02 (2.3371 s / it)
+* Batch-avg:             Cls Acc1: 72.669,                Cls Acc5: 84.534,                loss 1.652
+Max acc1_cls: 73.73%
+Epoch: [52]  [0/3]  eta: 0:00:36  lr: 0.000489  loss_total: 0.1111 (0.1111)  loss_cls: 0.1111 (0.1111)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 12.0722  data: 11.6479  max mem: 15925
+Epoch: [52]  [2/3]  eta: 0:00:04  lr: 0.000489  loss_total: 0.1111 (0.1135)  loss_cls: 0.1111 (0.1135)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)  time: 4.3052  data: 3.8827  max mem: 15925
+Epoch: [52] Total time: 0:00:13 (4.3645 s / it)
+Averaged stats: lr: 0.000489  loss_total: 0.1111 (0.1135)  loss_cls: 0.1111 (0.1135)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6253 (1.6253)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 84.1102 (84.1102)  time: 2.1785  data: 2.0817  max mem: 15925
+Test: Total time: 0:00:02 (2.3416 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 84.110,                loss 1.625
+Max acc1_cls: 73.73%
+Epoch: [53]  [0/3]  eta: 0:00:37  lr: 0.000474  loss_total: 0.1186 (0.1186)  loss_cls: 0.1186 (0.1186)  acc1_cls: 99.4792 (99.4792)  acc5_cls: 99.8698 (99.8698)  time: 12.3885  data: 11.9644  max mem: 15925
+Epoch: [53]  [2/3]  eta: 0:00:04  lr: 0.000474  loss_total: 0.1186 (0.1273)  loss_cls: 0.1186 (0.1273)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (99.9566)  time: 4.4102  data: 3.9882  max mem: 15925
+Epoch: [53] Total time: 0:00:13 (4.4678 s / it)
+Averaged stats: lr: 0.000474  loss_total: 0.1186 (0.1273)  loss_cls: 0.1186 (0.1273)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6441 (1.6441)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 82.6271 (82.6271)  time: 2.2373  data: 2.1411  max mem: 15925
+Test: Total time: 0:00:02 (2.4595 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 82.627,                loss 1.644
+Max acc1_cls: 73.73%
+Epoch: [54]  [0/3]  eta: 0:00:36  lr: 0.000458  loss_total: 0.1665 (0.1665)  loss_cls: 0.1665 (0.1665)  acc1_cls: 99.0885 (99.0885)  acc5_cls: 99.8698 (99.8698)  time: 12.1551  data: 11.7299  max mem: 15925
+Epoch: [54]  [2/3]  eta: 0:00:04  lr: 0.000458  loss_total: 0.1302 (0.1352)  loss_cls: 0.1302 (0.1352)  acc1_cls: 99.6094 (99.5226)  acc5_cls: 99.8698 (99.9132)  time: 4.3325  data: 3.9100  max mem: 15925
+Epoch: [54] Total time: 0:00:13 (4.3906 s / it)
+Averaged stats: lr: 0.000458  loss_total: 0.1302 (0.1352)  loss_cls: 0.1302 (0.1352)  acc1_cls: 99.6094 (99.5226)  acc5_cls: 99.8698 (99.9132)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6831 (1.6831)  acc1_cls: 72.8814 (72.8814)  acc5_cls: 83.0508 (83.0508)  time: 2.1022  data: 2.0059  max mem: 15925
+Test: Total time: 0:00:02 (2.2715 s / it)
+* Batch-avg:             Cls Acc1: 72.881,                Cls Acc5: 83.051,                loss 1.683
+Max acc1_cls: 73.73%
+Epoch: [55]  [0/3]  eta: 0:00:36  lr: 0.000443  loss_total: 0.1346 (0.1346)  loss_cls: 0.1346 (0.1346)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.1161  data: 11.6906  max mem: 15925
+Epoch: [55]  [2/3]  eta: 0:00:04  lr: 0.000443  loss_total: 0.1346 (0.1298)  loss_cls: 0.1346 (0.1298)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 4.3763  data: 3.9532  max mem: 15925
+Epoch: [55] Total time: 0:00:13 (4.4342 s / it)
+Averaged stats: lr: 0.000443  loss_total: 0.1346 (0.1298)  loss_cls: 0.1346 (0.1298)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7228 (1.7228)  acc1_cls: 71.8220 (71.8220)  acc5_cls: 84.1102 (84.1102)  time: 2.2264  data: 2.1298  max mem: 15925
+Test: Total time: 0:00:02 (2.4550 s / it)
+* Batch-avg:             Cls Acc1: 71.822,                Cls Acc5: 84.110,                loss 1.723
+Max acc1_cls: 73.73%
+Epoch: [56]  [0/3]  eta: 0:00:37  lr: 0.000428  loss_total: 0.1144 (0.1144)  loss_cls: 0.1144 (0.1144)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.5734  data: 12.1500  max mem: 15925
+Epoch: [56]  [2/3]  eta: 0:00:04  lr: 0.000428  loss_total: 0.1281 (0.1243)  loss_cls: 0.1281 (0.1243)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (99.9566)  time: 4.4722  data: 4.0500  max mem: 15925
+Epoch: [56] Total time: 0:00:13 (4.5305 s / it)
+Averaged stats: lr: 0.000428  loss_total: 0.1281 (0.1243)  loss_cls: 0.1281 (0.1243)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7250 (1.7250)  acc1_cls: 72.0339 (72.0339)  acc5_cls: 83.4746 (83.4746)  time: 2.1684  data: 2.0718  max mem: 15925
+Test: Total time: 0:00:02 (2.3356 s / it)
+* Batch-avg:             Cls Acc1: 72.034,                Cls Acc5: 83.475,                loss 1.725
+Max acc1_cls: 73.73%
+Epoch: [57]  [0/3]  eta: 0:00:37  lr: 0.000412  loss_total: 0.1014 (0.1014)  loss_cls: 0.1014 (0.1014)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.3420  data: 11.9181  max mem: 15925
+Epoch: [57]  [2/3]  eta: 0:00:04  lr: 0.000412  loss_total: 0.1229 (0.1158)  loss_cls: 0.1229 (0.1158)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (99.9566)  time: 4.3950  data: 3.9728  max mem: 15925
+Epoch: [57] Total time: 0:00:13 (4.4541 s / it)
+Averaged stats: lr: 0.000412  loss_total: 0.1229 (0.1158)  loss_cls: 0.1229 (0.1158)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7032 (1.7032)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 82.8390 (82.8390)  time: 2.1859  data: 2.0896  max mem: 15925
+Test: Total time: 0:00:02 (2.4098 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 82.839,                loss 1.703
+Max acc1_cls: 73.73%
+Epoch: [58]  [0/3]  eta: 0:00:36  lr: 0.000397  loss_total: 0.0851 (0.0851)  loss_cls: 0.0851 (0.0851)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.1201  data: 11.6948  max mem: 15925
+Epoch: [58]  [2/3]  eta: 0:00:04  lr: 0.000397  loss_total: 0.0984 (0.1009)  loss_cls: 0.0984 (0.1009)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (99.9566)  time: 4.3793  data: 3.9567  max mem: 15925
+Epoch: [58] Total time: 0:00:13 (4.4364 s / it)
+Averaged stats: lr: 0.000397  loss_total: 0.0984 (0.1009)  loss_cls: 0.0984 (0.1009)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6844 (1.6844)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 83.0508 (83.0508)  time: 2.2682  data: 2.1718  max mem: 15925
+Test: Total time: 0:00:02 (2.4870 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 83.051,                loss 1.684
+Max acc1_cls: 73.73%
+Epoch: [59]  [0/3]  eta: 0:00:37  lr: 0.000382  loss_total: 0.1242 (0.1242)  loss_cls: 0.1242 (0.1242)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.3465  data: 11.9215  max mem: 15925
+Epoch: [59]  [2/3]  eta: 0:00:04  lr: 0.000382  loss_total: 0.1063 (0.1117)  loss_cls: 0.1063 (0.1117)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)  time: 4.3966  data: 3.9739  max mem: 15925
+Epoch: [59] Total time: 0:00:13 (4.4549 s / it)
+Averaged stats: lr: 0.000382  loss_total: 0.1063 (0.1117)  loss_cls: 0.1063 (0.1117)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6931 (1.6931)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 83.0508 (83.0508)  time: 2.2374  data: 2.1410  max mem: 15925
+Test: Total time: 0:00:02 (2.4437 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 83.051,                loss 1.693
+Max acc1_cls: 73.73%
+Epoch: [60]  [0/3]  eta: 0:00:37  lr: 0.000367  loss_total: 0.1296 (0.1296)  loss_cls: 0.1296 (0.1296)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 12.4240  data: 11.9988  max mem: 15925
+Epoch: [60]  [2/3]  eta: 0:00:04  lr: 0.000367  loss_total: 0.1186 (0.1193)  loss_cls: 0.1186 (0.1193)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 4.4225  data: 3.9997  max mem: 15925
+Epoch: [60] Total time: 0:00:13 (4.4816 s / it)
+Averaged stats: lr: 0.000367  loss_total: 0.1186 (0.1193)  loss_cls: 0.1186 (0.1193)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6679 (1.6679)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 82.6271 (82.6271)  time: 2.2017  data: 2.1054  max mem: 15925
+Test: Total time: 0:00:02 (2.4205 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 82.627,                loss 1.668
+Max acc1_cls: 73.73%
+Epoch: [61]  [0/3]  eta: 0:00:35  lr: 0.000352  loss_total: 0.1130 (0.1130)  loss_cls: 0.1130 (0.1130)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 11.8971  data: 11.4714  max mem: 15925
+Epoch: [61]  [2/3]  eta: 0:00:04  lr: 0.000352  loss_total: 0.1061 (0.1065)  loss_cls: 0.1061 (0.1065)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (100.0000)  time: 4.2465  data: 3.8239  max mem: 15925
+Epoch: [61] Total time: 0:00:12 (4.3060 s / it)
+Averaged stats: lr: 0.000352  loss_total: 0.1061 (0.1065)  loss_cls: 0.1061 (0.1065)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6576 (1.6576)  acc1_cls: 73.0932 (73.0932)  acc5_cls: 83.0508 (83.0508)  time: 2.1590  data: 2.0626  max mem: 15925
+Test: Total time: 0:00:02 (2.3284 s / it)
+* Batch-avg:             Cls Acc1: 73.093,                Cls Acc5: 83.051,                loss 1.658
+Max acc1_cls: 73.73%
+Epoch: [62]  [0/3]  eta: 0:00:38  lr: 0.000337  loss_total: 0.1134 (0.1134)  loss_cls: 0.1134 (0.1134)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 99.8698 (99.8698)  time: 12.7081  data: 12.2836  max mem: 15925
+Epoch: [62]  [2/3]  eta: 0:00:04  lr: 0.000337  loss_total: 0.0983 (0.1022)  loss_cls: 0.0983 (0.1022)  acc1_cls: 99.8698 (99.7830)  acc5_cls: 100.0000 (99.9566)  time: 4.5173  data: 4.0946  max mem: 15925
+Epoch: [62] Total time: 0:00:13 (4.5751 s / it)
+Averaged stats: lr: 0.000337  loss_total: 0.0983 (0.1022)  loss_cls: 0.0983 (0.1022)  acc1_cls: 99.8698 (99.7830)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6801 (1.6801)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 83.0508 (83.0508)  time: 2.2082  data: 2.1118  max mem: 15925
+Test: Total time: 0:00:02 (2.3718 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 83.051,                loss 1.680
+Max acc1_cls: 73.73%
+Epoch: [63]  [0/3]  eta: 0:00:37  lr: 0.000323  loss_total: 0.1073 (0.1073)  loss_cls: 0.1073 (0.1073)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.5626  data: 12.1384  max mem: 15925
+Epoch: [63]  [2/3]  eta: 0:00:04  lr: 0.000323  loss_total: 0.1240 (0.1196)  loss_cls: 0.1240 (0.1196)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (99.9566)  time: 4.4688  data: 4.0462  max mem: 15925
+Epoch: [63] Total time: 0:00:13 (4.5272 s / it)
+Averaged stats: lr: 0.000323  loss_total: 0.1240 (0.1196)  loss_cls: 0.1240 (0.1196)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7192 (1.7192)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 83.6864 (83.6864)  time: 2.1812  data: 2.0850  max mem: 15925
+Test: Total time: 0:00:02 (2.3464 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 83.686,                loss 1.719
+Max acc1_cls: 73.94%
+Epoch: [64]  [0/3]  eta: 0:00:37  lr: 0.000308  loss_total: 0.1107 (0.1107)  loss_cls: 0.1107 (0.1107)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.4457  data: 12.0222  max mem: 15925
+Epoch: [64]  [2/3]  eta: 0:00:04  lr: 0.000308  loss_total: 0.1044 (0.1050)  loss_cls: 0.1044 (0.1050)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 4.4293  data: 4.0074  max mem: 15925
+Epoch: [64] Total time: 0:00:13 (4.4867 s / it)
+Averaged stats: lr: 0.000308  loss_total: 0.1044 (0.1050)  loss_cls: 0.1044 (0.1050)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.7173 (1.7173)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 83.4746 (83.4746)  time: 2.2102  data: 2.1140  max mem: 15925
+Test: Total time: 0:00:02 (2.4345 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 83.475,                loss 1.717
+Max acc1_cls: 73.94%
+Epoch: [65]  [0/3]  eta: 0:00:37  lr: 0.000294  loss_total: 0.1018 (0.1018)  loss_cls: 0.1018 (0.1018)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.3782  data: 11.9541  max mem: 15925
+Epoch: [65]  [2/3]  eta: 0:00:04  lr: 0.000294  loss_total: 0.0984 (0.0966)  loss_cls: 0.0984 (0.0966)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (99.9566)  time: 4.4072  data: 3.9848  max mem: 15925
+Epoch: [65] Total time: 0:00:13 (4.4655 s / it)
+Averaged stats: lr: 0.000294  loss_total: 0.0984 (0.0966)  loss_cls: 0.0984 (0.0966)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6851 (1.6851)  acc1_cls: 72.8814 (72.8814)  acc5_cls: 84.5339 (84.5339)  time: 2.1860  data: 2.0896  max mem: 15925
+Test: Total time: 0:00:02 (2.4153 s / it)
+* Batch-avg:             Cls Acc1: 72.881,                Cls Acc5: 84.534,                loss 1.685
+Max acc1_cls: 73.94%
+Epoch: [66]  [0/3]  eta: 0:00:37  lr: 0.000280  loss_total: 0.1064 (0.1064)  loss_cls: 0.1064 (0.1064)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 99.8698 (99.8698)  time: 12.5521  data: 12.1281  max mem: 15925
+Epoch: [66]  [2/3]  eta: 0:00:04  lr: 0.000280  loss_total: 0.1064 (0.1050)  loss_cls: 0.1064 (0.1050)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (99.9566)  time: 4.4651  data: 4.0428  max mem: 15925
+Epoch: [66] Total time: 0:00:13 (4.5229 s / it)
+Averaged stats: lr: 0.000280  loss_total: 0.1064 (0.1050)  loss_cls: 0.1064 (0.1050)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6701 (1.6701)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 84.7458 (84.7458)  time: 2.1613  data: 2.0648  max mem: 15925
+Test: Total time: 0:00:02 (2.3338 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 84.746,                loss 1.670
+Max acc1_cls: 73.94%
+Epoch: [67]  [0/3]  eta: 0:00:35  lr: 0.000267  loss_total: 0.0839 (0.0839)  loss_cls: 0.0839 (0.0839)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 11.9125  data: 11.4863  max mem: 15925
+Epoch: [67]  [2/3]  eta: 0:00:04  lr: 0.000267  loss_total: 0.1008 (0.0991)  loss_cls: 0.1008 (0.0991)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)  time: 4.3086  data: 3.8849  max mem: 15925
+Epoch: [67] Total time: 0:00:13 (4.3666 s / it)
+Averaged stats: lr: 0.000267  loss_total: 0.1008 (0.0991)  loss_cls: 0.1008 (0.0991)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6778 (1.6778)  acc1_cls: 73.0932 (73.0932)  acc5_cls: 83.8983 (83.8983)  time: 2.1299  data: 2.0334  max mem: 15925
+Test: Total time: 0:00:02 (2.3013 s / it)
+* Batch-avg:             Cls Acc1: 73.093,                Cls Acc5: 83.898,                loss 1.678
+Max acc1_cls: 73.94%
+Epoch: [68]  [0/3]  eta: 0:00:36  lr: 0.000253  loss_total: 0.1073 (0.1073)  loss_cls: 0.1073 (0.1073)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.1964  data: 11.7717  max mem: 15925
+Epoch: [68]  [2/3]  eta: 0:00:04  lr: 0.000253  loss_total: 0.1066 (0.1061)  loss_cls: 0.1066 (0.1061)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 4.3464  data: 3.9240  max mem: 15925
+Epoch: [68] Total time: 0:00:13 (4.4027 s / it)
+Averaged stats: lr: 0.000253  loss_total: 0.1066 (0.1061)  loss_cls: 0.1066 (0.1061)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6810 (1.6810)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 83.8983 (83.8983)  time: 2.1387  data: 2.0422  max mem: 15925
+Test: Total time: 0:00:02 (2.3050 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 83.898,                loss 1.681
+Max acc1_cls: 73.94%
+Epoch: [69]  [0/3]  eta: 0:00:35  lr: 0.000240  loss_total: 0.0788 (0.0788)  loss_cls: 0.0788 (0.0788)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 11.8955  data: 11.4702  max mem: 15925
+Epoch: [69]  [2/3]  eta: 0:00:04  lr: 0.000240  loss_total: 0.1016 (0.0976)  loss_cls: 0.1016 (0.0976)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (99.9566)  time: 4.3038  data: 3.8812  max mem: 15925
+Epoch: [69] Total time: 0:00:13 (4.3630 s / it)
+Averaged stats: lr: 0.000240  loss_total: 0.1016 (0.0976)  loss_cls: 0.1016 (0.0976)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6863 (1.6863)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 83.4746 (83.4746)  time: 2.1472  data: 2.0509  max mem: 15925
+Test: Total time: 0:00:02 (2.3606 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 83.475,                loss 1.686
+Max acc1_cls: 74.15%
+Epoch: [70]  [0/3]  eta: 0:00:37  lr: 0.000227  loss_total: 0.1037 (0.1037)  loss_cls: 0.1037 (0.1037)  acc1_cls: 99.3490 (99.3490)  acc5_cls: 100.0000 (100.0000)  time: 12.3758  data: 11.9513  max mem: 15925
+Epoch: [70]  [2/3]  eta: 0:00:04  lr: 0.000227  loss_total: 0.1037 (0.0998)  loss_cls: 0.1037 (0.0998)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (100.0000)  time: 4.4065  data: 3.9838  max mem: 15925
+Epoch: [70] Total time: 0:00:13 (4.5277 s / it)
+Averaged stats: lr: 0.000227  loss_total: 0.1037 (0.0998)  loss_cls: 0.1037 (0.0998)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6763 (1.6763)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 84.1102 (84.1102)  time: 2.1766  data: 2.0803  max mem: 15925
+Test: Total time: 0:00:02 (2.3376 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 84.110,                loss 1.676
+Max acc1_cls: 74.15%
+Epoch: [71]  [0/3]  eta: 0:00:38  lr: 0.000214  loss_total: 0.1086 (0.1086)  loss_cls: 0.1086 (0.1086)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 99.8698 (99.8698)  time: 12.6699  data: 12.2463  max mem: 15925
+Epoch: [71]  [2/3]  eta: 0:00:04  lr: 0.000214  loss_total: 0.1086 (0.1029)  loss_cls: 0.1086 (0.1029)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 99.8698 (99.9132)  time: 4.5042  data: 4.0822  max mem: 15925
+Epoch: [71] Total time: 0:00:13 (4.5631 s / it)
+Averaged stats: lr: 0.000214  loss_total: 0.1086 (0.1029)  loss_cls: 0.1086 (0.1029)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 99.8698 (99.9132)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6689 (1.6689)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 83.8983 (83.8983)  time: 2.2020  data: 2.1057  max mem: 15925
+Test: Total time: 0:00:02 (2.4244 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 83.898,                loss 1.669
+Max acc1_cls: 74.15%
+Epoch: [72]  [0/3]  eta: 0:00:34  lr: 0.000202  loss_total: 0.1011 (0.1011)  loss_cls: 0.1011 (0.1011)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 11.4814  data: 11.0561  max mem: 15925
+Epoch: [72]  [2/3]  eta: 0:00:04  lr: 0.000202  loss_total: 0.1011 (0.1004)  loss_cls: 0.1011 (0.1004)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (100.0000)  time: 4.2771  data: 3.8538  max mem: 15925
+Epoch: [72] Total time: 0:00:13 (4.3352 s / it)
+Averaged stats: lr: 0.000202  loss_total: 0.1011 (0.1004)  loss_cls: 0.1011 (0.1004)  acc1_cls: 99.7396 (99.6962)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6703 (1.6703)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 84.5339 (84.5339)  time: 2.1273  data: 2.0310  max mem: 15925
+Test: Total time: 0:00:02 (2.2915 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 84.534,                loss 1.670
+Max acc1_cls: 74.15%
+Epoch: [73]  [0/3]  eta: 0:00:38  lr: 0.000189  loss_total: 0.1175 (0.1175)  loss_cls: 0.1175 (0.1175)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 12.6668  data: 12.2427  max mem: 15925
+Epoch: [73]  [2/3]  eta: 0:00:04  lr: 0.000189  loss_total: 0.1081 (0.1017)  loss_cls: 0.1081 (0.1017)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (100.0000)  time: 4.5032  data: 4.0810  max mem: 15925
+Epoch: [73] Total time: 0:00:13 (4.5591 s / it)
+Averaged stats: lr: 0.000189  loss_total: 0.1081 (0.1017)  loss_cls: 0.1081 (0.1017)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6722 (1.6722)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 84.1102 (84.1102)  time: 2.2046  data: 2.1083  max mem: 15925
+Test: Total time: 0:00:02 (2.4260 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 84.110,                loss 1.672
+Max acc1_cls: 74.15%
+Epoch: [74]  [0/3]  eta: 0:00:35  lr: 0.000178  loss_total: 0.0934 (0.0934)  loss_cls: 0.0934 (0.0934)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 11.7791  data: 11.3530  max mem: 15925
+Epoch: [74]  [2/3]  eta: 0:00:04  lr: 0.000178  loss_total: 0.0934 (0.0951)  loss_cls: 0.0934 (0.0951)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)  time: 4.3132  data: 3.8899  max mem: 15925
+Epoch: [74] Total time: 0:00:13 (4.3720 s / it)
+Averaged stats: lr: 0.000178  loss_total: 0.0934 (0.0951)  loss_cls: 0.0934 (0.0951)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6560 (1.6560)  acc1_cls: 74.3644 (74.3644)  acc5_cls: 84.7458 (84.7458)  time: 2.1704  data: 2.0741  max mem: 15925
+Test: Total time: 0:00:02 (2.3382 s / it)
+* Batch-avg:             Cls Acc1: 74.364,                Cls Acc5: 84.746,                loss 1.656
+Max acc1_cls: 74.36%
+Epoch: [75]  [0/3]  eta: 0:00:37  lr: 0.000166  loss_total: 0.1029 (0.1029)  loss_cls: 0.1029 (0.1029)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.3699  data: 11.9455  max mem: 15925
+Epoch: [75]  [2/3]  eta: 0:00:04  lr: 0.000166  loss_total: 0.1024 (0.1009)  loss_cls: 0.1024 (0.1009)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (100.0000)  time: 4.4044  data: 3.9819  max mem: 15925
+Epoch: [75] Total time: 0:00:13 (4.4629 s / it)
+Averaged stats: lr: 0.000166  loss_total: 0.1024 (0.1009)  loss_cls: 0.1024 (0.1009)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6465 (1.6465)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 84.9576 (84.9576)  time: 2.2108  data: 2.1144  max mem: 15925
+Test: Total time: 0:00:02 (2.4349 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 84.958,                loss 1.647
+Max acc1_cls: 74.36%
+Epoch: [76]  [0/3]  eta: 0:00:37  lr: 0.000155  loss_total: 0.1008 (0.1008)  loss_cls: 0.1008 (0.1008)  acc1_cls: 99.4792 (99.4792)  acc5_cls: 99.8698 (99.8698)  time: 12.4570  data: 12.0337  max mem: 15925
+Epoch: [76]  [2/3]  eta: 0:00:04  lr: 0.000155  loss_total: 0.0986 (0.0982)  loss_cls: 0.0986 (0.0982)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (99.9566)  time: 4.4336  data: 4.0113  max mem: 15925
+Epoch: [76] Total time: 0:00:13 (4.4909 s / it)
+Averaged stats: lr: 0.000155  loss_total: 0.0986 (0.0982)  loss_cls: 0.0986 (0.0982)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6527 (1.6527)  acc1_cls: 74.5763 (74.5763)  acc5_cls: 84.9576 (84.9576)  time: 2.2175  data: 2.1209  max mem: 15925
+Test: Total time: 0:00:02 (2.4383 s / it)
+* Batch-avg:             Cls Acc1: 74.576,                Cls Acc5: 84.958,                loss 1.653
+Max acc1_cls: 74.58%
+Epoch: [77]  [0/3]  eta: 0:00:37  lr: 0.000144  loss_total: 0.0924 (0.0924)  loss_cls: 0.0924 (0.0924)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 12.4362  data: 12.0127  max mem: 15925
+Epoch: [77]  [2/3]  eta: 0:00:04  lr: 0.000144  loss_total: 0.0924 (0.0952)  loss_cls: 0.0924 (0.0952)  acc1_cls: 99.6094 (99.5660)  acc5_cls: 100.0000 (100.0000)  time: 4.4265  data: 4.0043  max mem: 15925
+Epoch: [77] Total time: 0:00:13 (4.4831 s / it)
+Averaged stats: lr: 0.000144  loss_total: 0.0924 (0.0952)  loss_cls: 0.0924 (0.0952)  acc1_cls: 99.6094 (99.5660)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6576 (1.6576)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 84.9576 (84.9576)  time: 2.2268  data: 2.1305  max mem: 15925
+Test: Total time: 0:00:02 (2.4442 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 84.958,                loss 1.658
+Max acc1_cls: 74.58%
+Epoch: [78]  [0/3]  eta: 0:00:35  lr: 0.000134  loss_total: 0.1040 (0.1040)  loss_cls: 0.1040 (0.1040)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 11.8865  data: 11.4602  max mem: 15925
+Epoch: [78]  [2/3]  eta: 0:00:04  lr: 0.000134  loss_total: 0.0867 (0.0888)  loss_cls: 0.0867 (0.0888)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)  time: 4.2978  data: 3.8746  max mem: 15925
+Epoch: [78] Total time: 0:00:13 (4.3584 s / it)
+Averaged stats: lr: 0.000134  loss_total: 0.0867 (0.0888)  loss_cls: 0.0867 (0.0888)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6570 (1.6570)  acc1_cls: 74.5763 (74.5763)  acc5_cls: 84.5339 (84.5339)  time: 2.2048  data: 2.1083  max mem: 15925
+Test: Total time: 0:00:02 (2.4241 s / it)
+* Batch-avg:             Cls Acc1: 74.576,                Cls Acc5: 84.534,                loss 1.657
+Max acc1_cls: 74.58%
+Epoch: [79]  [0/3]  eta: 0:00:36  lr: 0.000124  loss_total: 0.1036 (0.1036)  loss_cls: 0.1036 (0.1036)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.0373  data: 11.6122  max mem: 15925
+Epoch: [79]  [2/3]  eta: 0:00:04  lr: 0.000124  loss_total: 0.0977 (0.0979)  loss_cls: 0.0977 (0.0979)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (100.0000)  time: 4.2938  data: 3.8708  max mem: 15925
+Epoch: [79] Total time: 0:00:13 (4.3504 s / it)
+Averaged stats: lr: 0.000124  loss_total: 0.0977 (0.0979)  loss_cls: 0.0977 (0.0979)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6506 (1.6506)  acc1_cls: 74.7881 (74.7881)  acc5_cls: 84.5339 (84.5339)  time: 2.1995  data: 2.1034  max mem: 15925
+Test: Total time: 0:00:02 (2.4184 s / it)
+* Batch-avg:             Cls Acc1: 74.788,                Cls Acc5: 84.534,                loss 1.651
+Max acc1_cls: 74.79%
+Epoch: [80]  [0/3]  eta: 0:00:36  lr: 0.000114  loss_total: 0.0976 (0.0976)  loss_cls: 0.0976 (0.0976)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 12.1172  data: 11.6925  max mem: 15925
+Epoch: [80]  [2/3]  eta: 0:00:04  lr: 0.000114  loss_total: 0.0910 (0.0925)  loss_cls: 0.0910 (0.0925)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)  time: 4.3202  data: 3.8976  max mem: 15925
+Epoch: [80] Total time: 0:00:13 (4.3768 s / it)
+Averaged stats: lr: 0.000114  loss_total: 0.0910 (0.0925)  loss_cls: 0.0910 (0.0925)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6508 (1.6508)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 85.1695 (85.1695)  time: 2.1990  data: 2.1028  max mem: 15925
+Test: Total time: 0:00:02 (2.4234 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 85.169,                loss 1.651
+Max acc1_cls: 74.79%
+Epoch: [81]  [0/3]  eta: 0:00:35  lr: 0.000105  loss_total: 0.0789 (0.0789)  loss_cls: 0.0789 (0.0789)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 11.9052  data: 11.4785  max mem: 15925
+Epoch: [81]  [2/3]  eta: 0:00:04  lr: 0.000105  loss_total: 0.0945 (0.0924)  loss_cls: 0.0945 (0.0924)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (99.9566)  time: 4.2497  data: 3.8263  max mem: 15925
+Epoch: [81] Total time: 0:00:12 (4.3079 s / it)
+Averaged stats: lr: 0.000105  loss_total: 0.0945 (0.0924)  loss_cls: 0.0945 (0.0924)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6570 (1.6570)  acc1_cls: 73.3051 (73.3051)  acc5_cls: 85.3814 (85.3814)  time: 2.2012  data: 2.1047  max mem: 15925
+Test: Total time: 0:00:02 (2.4194 s / it)
+* Batch-avg:             Cls Acc1: 73.305,                Cls Acc5: 85.381,                loss 1.657
+Max acc1_cls: 74.79%
+Epoch: [82]  [0/3]  eta: 0:00:34  lr: 0.000096  loss_total: 0.1017 (0.1017)  loss_cls: 0.1017 (0.1017)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 11.4832  data: 11.0570  max mem: 15925
+Epoch: [82]  [2/3]  eta: 0:00:04  lr: 0.000096  loss_total: 0.1017 (0.1030)  loss_cls: 0.1017 (0.1030)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)  time: 4.2866  data: 3.8630  max mem: 15925
+Epoch: [82] Total time: 0:00:13 (4.3446 s / it)
+Averaged stats: lr: 0.000096  loss_total: 0.1017 (0.1030)  loss_cls: 0.1017 (0.1030)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6657 (1.6657)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 84.9576 (84.9576)  time: 2.1210  data: 2.0245  max mem: 15925
+Test: Total time: 0:00:02 (2.2793 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 84.958,                loss 1.666
+Max acc1_cls: 74.79%
+Epoch: [83]  [0/3]  eta: 0:00:35  lr: 0.000087  loss_total: 0.0944 (0.0944)  loss_cls: 0.0944 (0.0944)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 11.8165  data: 11.3898  max mem: 15925
+Epoch: [83]  [2/3]  eta: 0:00:04  lr: 0.000087  loss_total: 0.0910 (0.0911)  loss_cls: 0.0910 (0.0911)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (100.0000)  time: 4.3018  data: 3.8781  max mem: 15925
+Epoch: [83] Total time: 0:00:13 (4.3608 s / it)
+Averaged stats: lr: 0.000087  loss_total: 0.0910 (0.0911)  loss_cls: 0.0910 (0.0911)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6666 (1.6666)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 84.3220 (84.3220)  time: 2.1138  data: 2.0176  max mem: 15925
+Test: Total time: 0:00:02 (2.2793 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 84.322,                loss 1.667
+Max acc1_cls: 74.79%
+Epoch: [84]  [0/3]  eta: 0:00:36  lr: 0.000079  loss_total: 0.0884 (0.0884)  loss_cls: 0.0884 (0.0884)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 99.8698 (99.8698)  time: 12.0176  data: 11.5915  max mem: 15925
+Epoch: [84]  [2/3]  eta: 0:00:04  lr: 0.000079  loss_total: 0.0884 (0.0930)  loss_cls: 0.0884 (0.0930)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (99.9566)  time: 4.3419  data: 3.9186  max mem: 15925
+Epoch: [84] Total time: 0:00:13 (4.3991 s / it)
+Averaged stats: lr: 0.000079  loss_total: 0.0884 (0.0930)  loss_cls: 0.0884 (0.0930)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6649 (1.6649)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 84.1102 (84.1102)  time: 2.2030  data: 2.1067  max mem: 15925
+Test: Total time: 0:00:02 (2.4284 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 84.110,                loss 1.665
+Max acc1_cls: 74.79%
+Epoch: [85]  [0/3]  eta: 0:00:38  lr: 0.000071  loss_total: 0.0872 (0.0872)  loss_cls: 0.0872 (0.0872)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 12.7449  data: 12.3212  max mem: 15925
+Epoch: [85]  [2/3]  eta: 0:00:04  lr: 0.000071  loss_total: 0.0837 (0.0823)  loss_cls: 0.0837 (0.0823)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)  time: 4.5298  data: 4.1071  max mem: 15925
+Epoch: [85] Total time: 0:00:13 (4.5868 s / it)
+Averaged stats: lr: 0.000071  loss_total: 0.0837 (0.0823)  loss_cls: 0.0837 (0.0823)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6619 (1.6619)  acc1_cls: 74.3644 (74.3644)  acc5_cls: 83.8983 (83.8983)  time: 2.1381  data: 2.0416  max mem: 15925
+Test: Total time: 0:00:02 (2.3532 s / it)
+* Batch-avg:             Cls Acc1: 74.364,                Cls Acc5: 83.898,                loss 1.662
+Max acc1_cls: 74.79%
+Epoch: [86]  [0/3]  eta: 0:00:36  lr: 0.000064  loss_total: 0.0877 (0.0877)  loss_cls: 0.0877 (0.0877)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 12.2130  data: 11.7892  max mem: 15925
+Epoch: [86]  [2/3]  eta: 0:00:04  lr: 0.000064  loss_total: 0.1024 (0.0998)  loss_cls: 0.1024 (0.0998)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)  time: 4.3522  data: 3.9298  max mem: 15925
+Epoch: [86] Total time: 0:00:13 (4.4100 s / it)
+Averaged stats: lr: 0.000064  loss_total: 0.1024 (0.0998)  loss_cls: 0.1024 (0.0998)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6599 (1.6599)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 83.6864 (83.6864)  time: 2.1323  data: 2.0360  max mem: 15925
+Test: Total time: 0:00:02 (2.2988 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 83.686,                loss 1.660
+Max acc1_cls: 74.79%
+Epoch: [87]  [0/3]  eta: 0:00:35  lr: 0.000057  loss_total: 0.1018 (0.1018)  loss_cls: 0.1018 (0.1018)  acc1_cls: 99.4792 (99.4792)  acc5_cls: 100.0000 (100.0000)  time: 11.8808  data: 11.4556  max mem: 15925
+Epoch: [87]  [2/3]  eta: 0:00:04  lr: 0.000057  loss_total: 0.0976 (0.0942)  loss_cls: 0.0976 (0.0942)  acc1_cls: 99.4792 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 4.3493  data: 3.9261  max mem: 15925
+Epoch: [87] Total time: 0:00:13 (4.4063 s / it)
+Averaged stats: lr: 0.000057  loss_total: 0.0976 (0.0942)  loss_cls: 0.0976 (0.0942)  acc1_cls: 99.4792 (99.6094)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6582 (1.6582)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 84.1102 (84.1102)  time: 2.2101  data: 2.1137  max mem: 15925
+Test: Total time: 0:00:02 (2.4324 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 84.110,                loss 1.658
+Max acc1_cls: 74.79%
+Epoch: [88]  [0/3]  eta: 0:00:38  lr: 0.000051  loss_total: 0.1174 (0.1174)  loss_cls: 0.1174 (0.1174)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 12.7118  data: 12.2885  max mem: 15925
+Epoch: [88]  [2/3]  eta: 0:00:04  lr: 0.000051  loss_total: 0.0924 (0.0986)  loss_cls: 0.0924 (0.0986)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)  time: 4.5535  data: 4.0962  max mem: 15925
+Epoch: [88] Total time: 0:00:13 (4.6119 s / it)
+Averaged stats: lr: 0.000051  loss_total: 0.0924 (0.0986)  loss_cls: 0.0924 (0.0986)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6604 (1.6604)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 84.3220 (84.3220)  time: 2.1824  data: 2.0863  max mem: 15925
+Test: Total time: 0:00:02 (2.3582 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 84.322,                loss 1.660
+Max acc1_cls: 74.79%
+Epoch: [89]  [0/3]  eta: 0:00:36  lr: 0.000045  loss_total: 0.0853 (0.0853)  loss_cls: 0.0853 (0.0853)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.2498  data: 11.8259  max mem: 15925
+Epoch: [89]  [2/3]  eta: 0:00:04  lr: 0.000045  loss_total: 0.0926 (0.0958)  loss_cls: 0.0926 (0.0958)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (100.0000)  time: 4.3645  data: 3.9421  max mem: 15925
+Epoch: [89] Total time: 0:00:13 (4.4246 s / it)
+Averaged stats: lr: 0.000045  loss_total: 0.0926 (0.0958)  loss_cls: 0.0926 (0.0958)  acc1_cls: 99.7396 (99.7830)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6637 (1.6637)  acc1_cls: 73.5170 (73.5170)  acc5_cls: 84.7458 (84.7458)  time: 2.2005  data: 2.1042  max mem: 15925
+Test: Total time: 0:00:02 (2.4236 s / it)
+* Batch-avg:             Cls Acc1: 73.517,                Cls Acc5: 84.746,                loss 1.664
+Max acc1_cls: 74.79%
+Epoch: [90]  [0/3]  eta: 0:00:37  lr: 0.000039  loss_total: 0.0933 (0.0933)  loss_cls: 0.0933 (0.0933)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 12.3457  data: 11.9210  max mem: 15925
+Epoch: [90]  [2/3]  eta: 0:00:04  lr: 0.000039  loss_total: 0.0933 (0.0981)  loss_cls: 0.0933 (0.0981)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)  time: 4.3965  data: 3.9737  max mem: 15925
+Epoch: [90] Total time: 0:00:13 (4.4560 s / it)
+Averaged stats: lr: 0.000039  loss_total: 0.0933 (0.0981)  loss_cls: 0.0933 (0.0981)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6666 (1.6666)  acc1_cls: 73.7288 (73.7288)  acc5_cls: 84.7458 (84.7458)  time: 2.1942  data: 2.0980  max mem: 15925
+Test: Total time: 0:00:02 (2.4250 s / it)
+* Batch-avg:             Cls Acc1: 73.729,                Cls Acc5: 84.746,                loss 1.667
+Max acc1_cls: 74.79%
+Epoch: [91]  [0/3]  eta: 0:00:35  lr: 0.000034  loss_total: 0.0775 (0.0775)  loss_cls: 0.0775 (0.0775)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 11.8686  data: 11.4452  max mem: 15925
+Epoch: [91]  [2/3]  eta: 0:00:04  lr: 0.000034  loss_total: 0.0922 (0.0898)  loss_cls: 0.0922 (0.0898)  acc1_cls: 100.0000 (99.8698)  acc5_cls: 100.0000 (99.9566)  time: 4.2366  data: 3.8151  max mem: 15925
+Epoch: [91] Total time: 0:00:12 (4.2943 s / it)
+Averaged stats: lr: 0.000034  loss_total: 0.0922 (0.0898)  loss_cls: 0.0922 (0.0898)  acc1_cls: 100.0000 (99.8698)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6633 (1.6633)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 84.9576 (84.9576)  time: 2.1701  data: 2.0735  max mem: 15925
+Test: Total time: 0:00:02 (2.4016 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 84.958,                loss 1.663
+Max acc1_cls: 74.79%
+Epoch: [92]  [0/3]  eta: 0:00:37  lr: 0.000030  loss_total: 0.0831 (0.0831)  loss_cls: 0.0831 (0.0831)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.4953  data: 12.0724  max mem: 15925
+Epoch: [92]  [2/3]  eta: 0:00:04  lr: 0.000030  loss_total: 0.0831 (0.0808)  loss_cls: 0.0831 (0.0808)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (100.0000)  time: 4.4460  data: 4.0242  max mem: 15925
+Epoch: [92] Total time: 0:00:13 (4.5052 s / it)
+Averaged stats: lr: 0.000030  loss_total: 0.0831 (0.0808)  loss_cls: 0.0831 (0.0808)  acc1_cls: 100.0000 (99.9132)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6605 (1.6605)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 84.9576 (84.9576)  time: 2.2094  data: 2.1132  max mem: 15925
+Test: Total time: 0:00:02 (2.4233 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 84.958,                loss 1.660
+Max acc1_cls: 74.79%
+Epoch: [93]  [0/3]  eta: 0:00:36  lr: 0.000026  loss_total: 0.0833 (0.0833)  loss_cls: 0.0833 (0.0833)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.2489  data: 11.8256  max mem: 15925
+Epoch: [93]  [2/3]  eta: 0:00:04  lr: 0.000026  loss_total: 0.0974 (0.0980)  loss_cls: 0.0974 (0.0980)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)  time: 4.3638  data: 3.9419  max mem: 15925
+Epoch: [93] Total time: 0:00:13 (4.4235 s / it)
+Averaged stats: lr: 0.000026  loss_total: 0.0974 (0.0980)  loss_cls: 0.0974 (0.0980)  acc1_cls: 99.8698 (99.8264)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6586 (1.6586)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 84.5339 (84.5339)  time: 2.2169  data: 2.1206  max mem: 15925
+Test: Total time: 0:00:02 (2.3809 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 84.534,                loss 1.659
+Max acc1_cls: 74.79%
+Epoch: [94]  [0/3]  eta: 0:00:37  lr: 0.000022  loss_total: 0.1048 (0.1048)  loss_cls: 0.1048 (0.1048)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.3383  data: 11.9130  max mem: 15925
+Epoch: [94]  [2/3]  eta: 0:00:04  lr: 0.000022  loss_total: 0.0916 (0.0940)  loss_cls: 0.0916 (0.0940)  acc1_cls: 99.7396 (99.6528)  acc5_cls: 99.8698 (99.9132)  time: 4.3941  data: 3.9711  max mem: 15925
+Epoch: [94] Total time: 0:00:13 (4.4535 s / it)
+Averaged stats: lr: 0.000022  loss_total: 0.0916 (0.0940)  loss_cls: 0.0916 (0.0940)  acc1_cls: 99.7396 (99.6528)  acc5_cls: 99.8698 (99.9132)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6562 (1.6562)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 85.1695 (85.1695)  time: 2.2691  data: 2.1728  max mem: 15925
+Test: Total time: 0:00:02 (2.4888 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 85.169,                loss 1.656
+Max acc1_cls: 74.79%
+Epoch: [95]  [0/3]  eta: 0:00:38  lr: 0.000019  loss_total: 0.0801 (0.0801)  loss_cls: 0.0801 (0.0801)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 12.6826  data: 12.2590  max mem: 15925
+Epoch: [95]  [2/3]  eta: 0:00:04  lr: 0.000019  loss_total: 0.0801 (0.0797)  loss_cls: 0.0801 (0.0797)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)  time: 4.5090  data: 4.0864  max mem: 15925
+Epoch: [95] Total time: 0:00:13 (4.5685 s / it)
+Averaged stats: lr: 0.000019  loss_total: 0.0801 (0.0797)  loss_cls: 0.0801 (0.0797)  acc1_cls: 100.0000 (99.9566)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6555 (1.6555)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 85.3814 (85.3814)  time: 2.1881  data: 2.0915  max mem: 15925
+Test: Total time: 0:00:02 (2.3609 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 85.381,                loss 1.655
+Max acc1_cls: 74.79%
+Epoch: [96]  [0/3]  eta: 0:00:36  lr: 0.000016  loss_total: 0.0989 (0.0989)  loss_cls: 0.0989 (0.0989)  acc1_cls: 99.6094 (99.6094)  acc5_cls: 99.8698 (99.8698)  time: 12.1757  data: 11.7493  max mem: 15925
+Epoch: [96]  [2/3]  eta: 0:00:04  lr: 0.000016  loss_total: 0.0817 (0.0855)  loss_cls: 0.0817 (0.0855)  acc1_cls: 100.0000 (99.8698)  acc5_cls: 100.0000 (99.9566)  time: 4.3544  data: 3.9312  max mem: 15925
+Epoch: [96] Total time: 0:00:13 (4.4137 s / it)
+Averaged stats: lr: 0.000016  loss_total: 0.0817 (0.0855)  loss_cls: 0.0817 (0.0855)  acc1_cls: 100.0000 (99.8698)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6555 (1.6555)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 84.9576 (84.9576)  time: 2.2456  data: 2.1495  max mem: 15925
+Test: Total time: 0:00:02 (2.4816 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 84.958,                loss 1.656
+Max acc1_cls: 74.79%
+Epoch: [97]  [0/3]  eta: 0:00:38  lr: 0.000014  loss_total: 0.0755 (0.0755)  loss_cls: 0.0755 (0.0755)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (100.0000)  time: 12.7438  data: 12.3200  max mem: 15925
+Epoch: [97]  [2/3]  eta: 0:00:04  lr: 0.000014  loss_total: 0.0878 (0.0854)  loss_cls: 0.0878 (0.0854)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (99.9566)  time: 4.5288  data: 4.1067  max mem: 15925
+Epoch: [97] Total time: 0:00:13 (4.5867 s / it)
+Averaged stats: lr: 0.000014  loss_total: 0.0878 (0.0854)  loss_cls: 0.0878 (0.0854)  acc1_cls: 99.7396 (99.7396)  acc5_cls: 100.0000 (99.9566)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6515 (1.6515)  acc1_cls: 73.9407 (73.9407)  acc5_cls: 85.3814 (85.3814)  time: 2.2580  data: 2.1617  max mem: 15925
+Test: Total time: 0:00:02 (2.4801 s / it)
+* Batch-avg:             Cls Acc1: 73.941,                Cls Acc5: 85.381,                loss 1.651
+Max acc1_cls: 74.79%
+Epoch: [98]  [0/3]  eta: 0:00:36  lr: 0.000012  loss_total: 0.0793 (0.0793)  loss_cls: 0.0793 (0.0793)  acc1_cls: 100.0000 (100.0000)  acc5_cls: 100.0000 (100.0000)  time: 12.0255  data: 11.5991  max mem: 15925
+Epoch: [98]  [2/3]  eta: 0:00:04  lr: 0.000012  loss_total: 0.0906 (0.0868)  loss_cls: 0.0906 (0.0868)  acc1_cls: 99.8698 (99.9132)  acc5_cls: 100.0000 (100.0000)  time: 4.3511  data: 3.9277  max mem: 15925
+Epoch: [98] Total time: 0:00:13 (4.4108 s / it)
+Averaged stats: lr: 0.000012  loss_total: 0.0906 (0.0868)  loss_cls: 0.0906 (0.0868)  acc1_cls: 99.8698 (99.9132)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6527 (1.6527)  acc1_cls: 74.3644 (74.3644)  acc5_cls: 85.3814 (85.3814)  time: 2.2732  data: 2.1767  max mem: 15925
+Test: Total time: 0:00:02 (2.5032 s / it)
+* Batch-avg:             Cls Acc1: 74.364,                Cls Acc5: 85.381,                loss 1.653
+Max acc1_cls: 74.79%
+Epoch: [99]  [0/3]  eta: 0:00:36  lr: 0.000011  loss_total: 0.0926 (0.0926)  loss_cls: 0.0926 (0.0926)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 12.1573  data: 11.7312  max mem: 15925
+Epoch: [99]  [2/3]  eta: 0:00:04  lr: 0.000011  loss_total: 0.0926 (0.0920)  loss_cls: 0.0926 (0.0920)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)  time: 4.3894  data: 3.9659  max mem: 15925
+Epoch: [99] Total time: 0:00:13 (4.4480 s / it)
+Averaged stats: lr: 0.000011  loss_total: 0.0926 (0.0920)  loss_cls: 0.0926 (0.0920)  acc1_cls: 99.8698 (99.8698)  acc5_cls: 100.0000 (100.0000)
+Test:  [0/1]  eta: 0:00:02  loss: 1.6513 (1.6513)  acc1_cls: 74.1525 (74.1525)  acc5_cls: 85.1695 (85.1695)  time: 2.2490  data: 2.1525  max mem: 15925
+Test: Total time: 0:00:02 (2.4871 s / it)
+* Batch-avg:             Cls Acc1: 74.153,                Cls Acc5: 85.169,                loss 1.651
+Max acc1_cls: 74.79%
+Training time 0:29:31
+wandb: Waiting for W&B process to finish... (success).
+wandb: - 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: \ 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: | 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: / 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: - 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: \ 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: | 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: / 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: - 0.015 MB of 0.015 MB uploaded (0.000 MB deduped)wandb: 
+wandb: Run history:
+wandb:   cls_acc1 ▁▃▄▅▆▇▇█████████████████████████████████
+wandb:   cls_acc5 ▁▃▅▆▇▇██████████████████████████████████
+wandb:   cls_loss █▇▅▄▃▃▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: total_loss █▇▅▄▃▃▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:   cls_acc1 100.0
+wandb:   cls_acc5 100.0
+wandb:   cls_loss 0.08844
+wandb: total_loss 0.08844
+wandb: 
+wandb: 🚀 View run jigsaw_base_p56_336_f101_shuffle_in1ke80fte100_e50_1e-3_1024 at: https://wandb.ai/inflaton-ai/Puzzle/runs/j2ym0000
+wandb: ️⚡ View job at https://wandb.ai/inflaton-ai/Puzzle/jobs/QXJ0aWZhY3RDb2xsZWN0aW9uOjExMjQ1NzM1Mg==/version_details/v9
+wandb: Synced 6 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20231104_103040-j2ym0000/logs
+Job ID: 32655
+Cluster: crimson
+User/Group: dh.huang.2023/dh.huang.2023
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 10
+CPU Utilized: 00:51:09
+CPU Efficiency: 17.01% of 05:00:40 core-walltime
+Job Wall-clock time: 00:30:04
+Memory Utilized: 62.32 GB
+Memory Efficiency: 97.38% of 64.00 GB

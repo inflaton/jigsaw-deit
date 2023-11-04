@@ -75,5 +75,3 @@ for folder in folders:
         image_filename = f"{data_point_index}.jpg"
         image_path = os.path.join(dest_dir, image_filename)
         create_puzzle_image(puzzles, image_path)
-
-        break
