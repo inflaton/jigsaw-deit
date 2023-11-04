@@ -1,0 +1,56 @@
+Submitting job: /common/home/users/d/dh.huang.2023/code/jigsaw-deit/test.sh
+Current Directory:
+/common/home/users/d/dh.huang.2023/code/jigsaw-deit
+Sat Nov  4 20:13:23 2023       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.104.05             Driver Version: 535.104.05   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A40                     On  | 00000000:41:00.0 Off |                    0 |
+|  0%   29C    P8              24W / 300W |      4MiB / 46068MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+model:  jigsaw_base_patch56_336 
+checkpoint:  data/checkpoints/best_checkpoint-h2-e-100-min-lr-1-e6.pth 
+val_image_folder:  data/cs/val 
+test_image_folder:  data/cs/train/49/ 
+batch:  768
+device: cuda
+loaded checkpoint: data/checkpoints/best_checkpoint-h2-e-100-min-lr-1-e6.pth
+acc1_cls: 75.000%
+total image found: 52
+52 results saved to: data/test.txt
+results saved to: data/result.zip
+Validation is completed in 0.0 hours, 0.0 minutes, 5.612 seconds
+49
+49
+49
+49
+49
+49
+49
+49
+49
+49
+Job ID: 32740
+Cluster: crimson
+User/Group: dh.huang.2023/dh.huang.2023
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 10
+CPU Utilized: 00:00:35
+CPU Efficiency: 19.44% of 00:03:00 core-walltime
+Job Wall-clock time: 00:00:18
+Memory Utilized: 3.39 MB
+Memory Efficiency: 0.01% of 64.00 GB
