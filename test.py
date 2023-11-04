@@ -178,7 +178,7 @@ with torch.no_grad():
         torch.from_numpy(np.array(all_labels)),
         topk=(1,),
     )[0]
-    print(f"acc1_cls: {acc1_cls:.3f}")
+    print(f"acc1_cls: {acc1_cls:.3f}%")
 
     model_result = []
     val_set = datasets.ImageFolder(val_image_folder, transform=transform)

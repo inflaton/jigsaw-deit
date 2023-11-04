@@ -8,6 +8,6 @@ nvidia-smi
 
 BATCH=768
 
-python test.py -t data/cs/train/49/
+python test.py -b $BATCH -t data/cs/train/49/
 
 tail data/test.txt
