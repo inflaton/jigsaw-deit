@@ -15,7 +15,7 @@ torchrun main_jigsaw.py \
     --model jigsaw_base_patch56_336 \
     --input-size 336 \
     --batch-size 768 \
-    --epochs 50 \
+    --epochs 100 \
     --unscale-lr \
     --lr 1e-3 \
     --min-lr 1e-5 \
